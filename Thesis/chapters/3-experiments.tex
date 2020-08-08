@@ -1,0 +1,354 @@
+\chapter{Experiments and Results}
+\label{ch:experiments_and_results}    
+        
+	This chapter focuses on the practical application of the knowledge gained in the previous chapters for experiments aimed at measuring data quality with an emphasis on AI/ML-based techniques.
+	
+	Data quality measurement experiments are in the field of Autoencoders \seesection{subsec:experiment_1_autoencoder} and Association Rule Mining \seesection{subsec:experiment_2_association_rule_mining}.
+	
+	The Section~\ref{sec:datasets} describes the datasets used in the experiments. In~the~Section~\ref{sec:experiment_environment} is information about the technical environment on which the experiments were developed.
+	
+	\section{Datasets}
+	\label{sec:datasets}
+	
+		For the following experiments, two datasets covering two classes of datasets were selected -- consistent and inconsistent. The first dataset \seesection{subsec:consistent_dataset} represents a class of datasets, where the values in a column are homogeneous (e.g. similar length of individual records, fewer missing records) and have a more transparent format. In contrast, the second dataset \seesection{subsec:inconsistent_dataset} represents a class of inconsistent datasets whose values are mostly of different nature within a column (e.g. unclear formats, lengths of column values). To the best of my knowledge, there is no labelled dataset for data quality or data quality measurement. For this reason, both datasets were enriched with synthetic data quality issues within the domain context of the dataset and data quality labels for experimental purposes.
+		
+\begin{table}[!h]
+\caption{Datasets basic information.}\label{tab:datasets_info}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Dataset} & \textbf{\# instances} & \textbf{\# columns} & \textbf{Pandas data types}\footnote{\path{https://pbpython.com/pandas_dtypes.html}}   \\ \hline
+Macy's           & 40897                    & 14                     & object(\#12), float64(\#2)             \\ \hline
+Open Food Facts  & 1356289                  & 181                    & object(\#57), float64(\#122), int64(\#2) \\ \hline
+\end{tabular}
+\end{table}
+
+
+			\subsection{Consistent dataset - Macy's (e-commerce)}
+			\label{subsec:consistent_dataset}
+		
+				Macy's dataset was found on the Kaggle datasets repository \footnote{https://www.kaggle.com/datasets}. Macy's is an American department store\footnote{https://www.macys.com/} selling products such as clothing, footwear or accessories. The dataset contains innerwear and swimwear products. The dataset has $40897$ records and $14$ columns (e.g. $\var{product\_name}$, $\var{price}$, $\var{pdp\_url}$, $\var{brand\_name}$, $\var{rating}$) in CSV format. More detailed information about the dataset can be found in~Table~\ref{tab:datasets_info} and in the \href{https://www.kaggle.com/PromptCloudHQ/innerwear-data-from-victorias-secret-and-others?select=macys_com.csv}{Dataset Kaggle link}.
+						
+			\subsection{Inconsistent dataset - Open Food Facts}
+			\label{subsec:inconsistent_dataset}
+		
+				Open Food Facts\footnote{https://world.openfoodfacts.org/} is a free, open, collaborative project that gathers information and data on food products from around the world. The dataset contains information such as ingredients, allergens, nutrition facts and information that can be found on product labels. The dataset has $1356289$ records and $181$ columns (e.g. $\var{code}$, $\var{created\_datetime}$, $\var{product\_name}$, $\var{countries}$, $\var{additives}$, $\var{glucose\_100g}$, $\var{sodium\_100g}$, $\var{energy\_100g}$) in TSV format. The dataset has a significant number of missing or inconsistent values, that is caused by the collaboration of users on the dataset. More detailed information about the dataset can be found in~Table~\ref{tab:datasets_info} and in the \href{https://world.openfoodfacts.org/data}{Open Food Facts data link}. Information on the different fields for the CSV exports is available in the following \href{https://static.openfoodfacts.org/data/data-fields.txt}{link}.
+			
+	\section{Experiment environment}
+	\label{sec:experiment_environment}
+
+		The experiments were carried out on a server with 2x Intel Xeon E5-2650v4 CPU, 256GB DDR4 RAM, 2x Nvidia Tesla V100 16GB GPU, and Ubuntu 16.04 operating system. All experiments were implemented in the Python\footnote{https://www.python.org} programming language using libraries that provide functionalities useful for machine learning experiments. Essential libraries for experiments include: 
+		
+			\begin{itemize}
+				\item Keras\footnote{https://keras.io/} -- a deep learning API written in Python, running on top of the machine learning platform TensorFlow\footnote{https://www.tensorflow.org/}.
+				\item  NumPy\footnote{https://numpy.org/} -- a library for scientific computing with Python.
+				\item Pandas\footnote{https://pandas.pydata.org/} -- a library for data analysis and data manipulation with Python.
+				\item Matplotlib\footnote{https://matplotlib.org/} -- a library for creating static, animated, and interactive visualizations in Python.
+				\item Natural Language Toolkit (NLTK)\footnote{https://www.nltk.org/} -- a set of libraries for symbolic and statistical natural language processing (NLP).
+			\end{itemize}
+					
+		For prototyping the experiments JupyterLab\footnote{https://jupyter.org/} was used. JupyterLab is a web-based interactive development environment for Jupyter notebooks, code, and data.
+
+		Conda\footnote{https://docs.conda.io/} package manager and environment management system is used for easier reproducibility of the experiments. All libraries and their versions are available in Conda environment \seeapendixfile{environment.yml}.
+
+    \section{Data quality measurement experiments}
+    
+		This section follows up on the previous theoretical chapter \seesection{ch:data_quality_measurement_methods} and comes with the implementation of novel approaches in the field of data quality measurement -- Autoencoders \seesection{subsec:experiment_1_autoencoder} and Association Rule Mining \seesection{subsec:experiment_2_association_rule_mining}.
+	
+			\subsection{Experiment 1 -- Autoencoder}
+			\label{subsec:experiment_1_autoencoder}
+							
+				The following experiment follows up on the section \seesection{sec:data_quality_measurement_using_autoencoder} where the theoretical basis of the autoencoder was introduced as an approach for measuring data quality.
+				
+				This experiment analyzes the potential of an autoencoder to measure data quality. The experiment will be measured on the two datasets mentioned above \seesection{sec:datasets}. Before describing the application and summarizing the results of this approach for measuring data quality, the experiment autoencoder model for this approach and its hyperparameters will be presented. An analysis and comparison with the complementary non-AI method will describe at the end of this experiment.
+
+				An elementary autoencoder model (see~Code~\ref{code:autoencoder_model}) was chosen for essential prototyping in order to detect anomalies. The output they are trying to generate is a reconstruction of the received input. During this reconstruction, a reconstruction error may occur, which is measured by normalized MSE.
+
+				\pythoncode{Autoencoder-model.py}{autoencoder_model}{Experiment 1 -- Autoecoder model.}
+
+				An autoencoder model is trained for each dataset feature. This setting allows us to record the reconstruction error for the desired value in a feature as well as the total reconstruction error for an entire row (sum of reconstruction errors for the entire record) (see~Figure~\ref{fig:autoencoder_experiment_design}). The reconstruction error is normalized within the features. As part of the extension of the work, it would be appropriate to deal with additional metrics for the entire record. If we give a well-trained autoencoder an inappropriate value (e.g. wrong format), we will probably get a significant reconstruction error.
+
+				\imagefiguremedium{autoencoder_experiment_design}{pdf/Autoencoder-experiment-design}{Experiment 1 -- Experiment design with autoencoders.}	
+							
+				Because the data attributes are heterogeneous (text and numbers), all dataset attributes have been converted to a string representation. The preparation of the text for the autoencoder was performed by tokenizing the value of the feature in order to preserve the elementary semantic information of the text. Subsequently, each token was converted to a numerical representation using UTF16. These numerical representations of tokens were composed into the resulting autoencoder model input value representation so that zero value was inserted between every two numerical tokens. In an example, value \texttt{'Hi Michael'} is represented as \texttt{[72, 105, 0, 77, 105, 99, 104, 97, 101, 108]}. Before submitting the modified input to the autoencoder, the data is scaled using the $MinMaxScaler$ method and divided into a training and test set. This part of the experiment (a conversion of text into numerical representation) is a potential candidate for the work extension.
+				
+				There are several ways to design an autoencoder. Several iterations of the autoencoder design were performed (e.g., using the $sigmoid$ activation function instead of $tanh$) to determine the most appropriate design and hyperparameters (epoch count -- 30, batch size - 256) for the experiment (see~Codes~\ref{code:autoencoder_model}).
+				
+%				\pythoncode{Autoencoder-hyperparms.py}{autoencoder_hyperparms}{Compilation, training and hyperparameters of Autoecoder model.}
+					
+				The basic parameter for measuring data quality is MSE threshold, which in this case is set at the quantile $0.9999$.	Values that have the reconstruction error value greater than the specified threshold are considered as outliers.	
+										
+				\subsubsection{Autoencoder experiment and results -- Macy's dataset}
+				
+					Synthetic errors in the domain context were created as part of an experiment on the Macy's dataset. For instance, these are the following types of synthetic errors -- product description in the wrong language, wrong product price format, inadequate product category and wrong product URL domain. More specifically, synthetic errors will be assessed at the end of this section.
+					
+					As already described in the design of the experiment (see~Figure~\ref{fig:autoencoder_experiment_design}) an autoencoder model was trained for each dataset feature. The performance of the autoencoder models seems to perform well for each feature because they are able to minimize the loss function within epochs meaningfully. All performance comparisons of the models are attached in the appendix \seeapendixfile{Experiment-1-autoencoder-macys-loss-columns.pdf}. One representative of the model performance graph was chosen for the example, specifically for the feature '$product\_name$' (see~Figure~\ref{fig:experiment_1_autoencoder_macys_loss_product_name}).
+
+					\imagefiguremedium{experiment_1_autoencoder_macys_loss_product_name}{pdf/Experiment-1-autoencoder-macys-loss-product_name.pdf}{Experiment 1 -- Macy's dataset -- Autoencoder model performance for Product name feature.}				
+				
+					In the histogram (see~Figure~\ref{fig:experiment_1_autoencoder_macys_sum_mse_dist}), we can see the distribution of the sum of MSE for the record in percentage and its MSE threshold (quantile 0.9999). Nine records were evaluated as outliers. These are records that do not qualitatively correspond to the dataset standard. Within these five outliers, two synthetically created data quality errors were found. The remaining seven nonsynthetic records are suspected of insufficient data quality and are suitable candidates for the investigation of domain experts. Thus, both records with artificially created defects in data quality and inadequate records that were part of the original dataset were found. For the comparison, in the Figure~\ref{fig:experiment_1_autoencoder_macys_mse_synth_vs_nonsynth_record}) we can see columnar MSE for synthetic and nonsynthetic record. In the synthetic record (Record id: $19386$, see title in~the~Figure~\ref{fig:experiment_1_autoencoder_macys_mse_synth_vs_nonsynth_record}), the MSE for the synthetically generated data quality error greatly predominated.
+					
+					\imagefigurelarge{experiment_1_autoencoder_macys_sum_mse_dist}{pdf/Experiment-1-autoencoder-macys-sum-mse-dist.pdf}{Experiment 1 -- Macy's dataset -- Histogram -- Distribution of SUM MSE for records in \% (quantile 0.9999).}
+										
+					The seven non-synthetic records are almost identical, except for the feature $\var{available\_size}$ in the case of the one record (Record id $27814$)(see~Figure~\ref{fig:experiment_1_autoencoder_macys_mse_synth_vs_nonsynth_record}), that differs in a one list value ($34C$ instead of $32G$ size). This value was evaluated as an outlier in the record. These seven records appear to be qualitatively suspicious due to their duplication and value such as:
+					
+					\begin{itemize}
+						\item $\var{style\_attributes}$ feature -- \texttt{"Please select specific item for product information.", "Imported", "Web ID: 1472235"} (For example, a more common value is: \texttt{"Wireless cups", "Wide band below bust with logo", "Racerback with sheer mesh panel"})
+					\end{itemize}
+					
+					\imagefigurelarge{experiment_1_autoencoder_macys_mse_synth_vs_nonsynth_record}{pdf/Experiment-1-autoencoder-macys-mse-synth-vs-nonsynth-record.pdf}{Experiment 1 -- Macy's dataset -- Synthetic vs. non-synthetic record -- Columns MSE.}
+					
+					It should be mentioned that the columns $\var{total\_sizes}$ and $\var{review\_count}$ also have a large impact in the selection of these records among SUM MSE outliers. At least a values $305$ for $\var{review\_count}$ features appear to have an inadequate column MSE value. The value does not seem to be bad to determine the number of reviews of the goods. The reason for the large MSE for this value may be that the value $305$ appears in the dataset only $10$ times.
+						
+					As mentioned in the experiment theory section \seesection{subsec:experiment_1_autoencoder}, as an extension of this experiment, it would be useful to explore additional metrics that would assess whether a given entire record is a suitable adept for data quality control. For example, information about the frequency of a given value in a dataset could be included in the metric.						
+																						
+					Autoencoder model found records that are adequate adepts that should be examined by data quality experts.
+					
+					Histograms of the MSE distribution and threshold for individual features of the dataset are available in the appendix \seeapendixfile{Experiment-1-autoencoder-macys-mse-dist-columns.pdf}.	
+								
+					Of the total number of the records (per attribute) were approximately $0.00209\%$ of non-synthetic data quality errors evaluated as outliers.
+
+					The success rate of autoencoder models on synthetic data quality errors was $56.25\%$ (see~Table~\ref{tab:exp1-autoencoder-macys-synthetic-success}) (MSE Threshold (quantile 0.9999)).
+			
+\begin{table}[!h]
+\caption{Experiment 1 -- Success of autoencoder models on synthetic data quality errors -- Macy's dataset.}\label{tab:exp1-autoencoder-macys-synthetic-success}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Category name}                                     & \textbf{$\sum$} \\ \hline
+\# synthetic DQ issues                            & 16           \\ \hline
+{[}synthetic{]} \# feature records below MSE threshold     & 7            \\ \hline
+{[}synthetic{]} \# feature records above MSE threshold     & 9            \\ \hline
+\end{tabular}
+\end{table}
+
+					The following list contains the essential outliers found in this experiment (\# records: $40897$):
+					
+					\begin{itemize}
+						\item Feature $price$ (\# unique values: $177$)(correct example format: $\$20.66$) -- Detection of the wrong product price format ($£16.50$, $\$16$).
+						\item Feature $pdp\_url$ (\# unique values: $1242$) -- Detection of the wrong domain in the URL ($.uk$ instead of $.com$). 
+						\item Feature $brand\_name$ (\# unique values: $9$) -- Detection of a domain mismatched value for a product brand ('Coca-Cola').  
+						\item Feature $product\_category$ (\# unique values: $7$) -- Detection of a domain mismatched value for a product category ('Headphones').
+						\item Feature $retailer$ (\# unique values: $2$) -- Detection of a domain mismatched value for a product category ('Kaufland US').
+						\item Feature $description$ (\# unique values: $591$) -- Detect the use of inappropriate language for product description (German instead of English).
+						\item Feature $rating$ (\# unique values: $28$) -- Detection of synthetic data quality errors for a rating that was out of range (e.g. $9.0$ and $6.0$) (correct range: $0.0$--$5.0$).
+						\item Features $style\_attributes$ (\# unique values: $854$), $available\_size$ (\# unique values: $612$), $color$ (\# unique values: $491$) -- For each of these features, from two to five values were evaluated as outliers. Domain knowledge is required to determine that these values are erroneous.
+					\end{itemize}
+					
+					The following list contains the significant synthetically created errors that were not found by this experiment:
+					
+					\begin{itemize}
+						\item Feature $price$ -- Failure to detect synthetic data quality errors for product price such as $\$24,50$ (wrong format), $\$0.50$ (low price) and suspicious value ($\$0.0$).
+						\item Feature $description$ -- Failure to detect synthetic data quality errors for product description that was too short and concise. 
+						\item Feature $color$ (\# unique values: $491$) -- Failure to detect synthetic data quality error for product color ('blakc').
+						\item Feature $total\_size$ (\# unique values: $464$) -- Failure to detect synthetic wrong format ($\{\,\}$ instead of $[\:]$)(correct example format: \texttt{["S", "M", "L"]}).
+					\end{itemize}
+					
+					A summary of the number of records above and below the MSE threshold (synthetic, non-synthetic) and the number of unique values for each feature can be seen in appendix \seeapendixfile{Experiment-1-autoencoder-macys-mse-summary-results.csv}.
+					
+				\subsubsection{Autoencoder experiment and results -- Open Food Facts dataset}	
+				
+					The Open Food Facts dataset has been reduced to $339072$ records due to its size. Domain synthetic errors of a similar format as the lead dataset were generated on the reduced dataset. Significant synthetic errors will be listed at the end of this section.	
+						
+					The performance of the autoencoder models seems to be worse than in the previous case. The performance of the models could be divided into three categories (see~Figures~\ref{fig:experiment_1_autoencoder_foods_loss_last_modified_t}, \ref{fig:experiment_1_autoencoder_foods_loss_packaging} and \ref{fig:experiment_1_autoencoder_foods_loss_allergens_en}). 
+					
+					Some autoencoder models work well (see~Figure~\ref{fig:experiment_1_autoencoder_foods_loss_last_modified_t}) because they are able to meaningfully minimize the loss in epochs. The poor performance of some models is probably caused by a small/large number of unique values or NaN and inconsistencies in values. All performance comparisons of the models are attached in the appendix \seeapendixfile{Experiment-1-autoencoder-foods-loss-columns.png}.
+											
+					\imagefiguremedium{experiment_1_autoencoder_foods_loss_last_modified_t}{pdf/Experiment-1-autoencoder-foods-loss-last_modified_t.pdf}{Experiment 1 -- Open Food Facts dataset -- Autoencoder model performance for Code feature.}				
+					
+					Inadequate performance of the autoencoder model for the $packaging$ feature (see~Figure~\ref{fig:experiment_1_autoencoder_foods_loss_packaging}) can be caused by lots of NaN and unique values (total number of values: $339072$, \# NaN: $285686$, \# unique values: $12989$).
+								
+					\imagefiguremedium{experiment_1_autoencoder_foods_loss_packaging}{pdf/Experiment-1-autoencoder-foods-loss-packaging.pdf}{Experiment 1 -- Open Food Facts dataset -- Autoencoder model performance for Packaging feature.}	
+					
+					Inadequate performance of the autoencoder model for the $allergens\_en$ feature (see~Figure~\ref{fig:experiment_1_autoencoder_foods_loss_allergens_en}) is due to the fact that all values of this feature are NaN. 
+					
+					\imagefiguremedium{experiment_1_autoencoder_foods_loss_allergens_en}{pdf/Experiment-1-autoencoder-foods-loss-allergens_en.pdf}{Experiment 1 -- Open Food Facts dataset -- Autoencoder model performance for Allergens en feature.}		
+							
+					In the histogram (see~Figure~\ref{fig:experiment_1_autoencoder_foods_sum_mse_dist}), we can see the distribution of the sum of MSE for the record in percentage and its MSE thresholds (quantile 0.9999). Thirty four records were evaluated as outliers. These are records that do not qualitatively correspond to the dataset standard. Within thirty four outliers, no synthetically created data quality errors were found. 
+					
+					\imagefigurelarge{experiment_1_autoencoder_foods_sum_mse_dist}{pdf/Experiment-1-autoencoder-foods-sum-mse-dist.pdf}{Experiment 1 -- Open Food Facts dataset -- Histogram -- Distribution of SUM MSE for records in \% (quantile 0.9999).}
+					
+					An interesting case is the record outlier (see~Figure~\ref{fig:experiment_1_autoencoder_foods_sum_mse_dist}) with a large SUM MSE value ($5.930$). The outlier has anomalies in $6$ URL columns (e.g. $image\_url$, $image\_small\_url$, $image\_ingredients\_url$). Because all the URLs have similar anomaly values, the one anomaly URL will be presented:
+										
+					Anomaly case of the the record feature $image\_url$ is:\\ \\ \path{https://static.openfoodfacts.org/images/products/019/542/500}\\
+\path{/249234531030003951519061410218/front_fr.3.400.jpg}
+					
+					Non-anomalous case of record feature $image\_url$ is:\\ \\ \path{https://static.openfoodfacts.org/images/products/340/159/671}\\
+\path{/6356/front_fr.4.400.jpg}
+					
+					For the anomalous URL, it can be seen that its penultimate part looks suspicious at first glance. This record should be analyzed by data quality domain experts.
+					
+					Histograms of the MSE distribution and threshold for individual features of the dataset are available in the appendix \seeapendixfile{Experiment-1-autoencoder-foods-mse-dist-columns.png}.
+					
+					Of the total number of the records (per attribute) were approximately $0.00666\%$ of non-synthetic data quality errors evaluated as outliers.
+
+					The success rate of autoencoder models on synthetic data quality errors was $43.75\%$ (see~Table~\ref{tab:exp1-autoencoder-foods-synthetic-success}) (MSE Threshold (quantile 0.9999)) as in the previous case.
+					
+					\begin{table}[!h]
+\caption{Experiment 1 -- Success of autoencoder models on synthetic data quality errors -- Open Food Facts dataset.}\label{tab:exp1-autoencoder-foods-synthetic-success}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Category name}                                     & \textbf{$\sum$} \\ \hline
+\# synthetic DQ issues                            & 16           \\ \hline
+{[}synthetic{]} \# feature records below MSE threshold     & 9            \\ \hline
+{[}synthetic{]} \# feature records above MSE threshold     & 7            \\ \hline
+\end{tabular}
+\end{table}
+
+					The following list contains the essential synthetic outliers found in this experiment (\# records: $339072$):
+					
+					\begin{itemize}
+						\item Feature $created\_datetime$ (\# unique values: $309116$) -- Detection of bad data formats ('\texttt{2017-07-26T18:27:10}', '\texttt{2017/07/26 18:27:10}',\\ '\texttt{2019-10-02T11:00:13.155}'). From non-synthetic dates were  31 dates were considered to be outliers, but they were in the correct format. These were mostly older dates (e.g. '\texttt{2012-05-29T18:09:00Z}') or dates around midnight (e.g. '\texttt{2020-01-01T00:51:07Z}'). 
+						\item Feature $salt\_100g$ (\# unique values: $6915$) -- Detection of wrong data types (string instead of numeric data).
+						\item Feature $nutrition\_score\_fr\_100g$ (\# unique values: $55$) - Wrong format detection (added wrong unit to numeric value -- '$15.0$ l').
+						\item Feature $nutriscore\_grade$ (correct values: \texttt{\{'a', 'b', 'c', 'd', 'e', 'nan'\}}) (\# unique values: $7$) -- Detection of inadequate score value ($9$).
+						\item Feature $code$ (\# unique values: $339027$) -- Detection of the specific code value ('841-010-000-2002').
+					\end{itemize}
+					
+					The following list contains the significant synthetically created errors that were not found by this experiment:
+					
+					\begin{itemize}
+						\item Feature $serving\_quantity$ (\# unique values: $1229$) -- Failure to detect a negative value for quantity ($-86.6$). (The error was not detected due to selected tokenization filters in the experiment, where one filter character was a hyphen.)
+						\item Feature $last\_modified\_datetime$ (\# unique values: $293655$) -- Failure to detect wrong time format, when the value $72$ was specified in the hour section ('\texttt{2019-10-15T72:21:10Z}').
+						\item Feature $image\_url$ (\# unique values: $235001$) -- Failure to detect the URL referring to a file with a \path{.txt} extension instead of a \path{.jpg} extension. (As an extension of this algorithm, Python parsing module of the library Urllib\footnote{\path{https://docs.python.org/3/library/urllib.html}} could be used to more accurately represent the semantics of URL features.)
+						\item Feature $countries$ (\# unique values: $35062$) -- Failure to detect city name ('Prague') in the feature countries.
+						\item Feature $main\_category$ (\# unique values: $11307$) -- Failure to detect numeric value ($16489.456$) in text feature.
+						\item Feature $fiber\_100g$ (\# unique values: $1139$) -- Failure to detect too high a numerical value ($1562.3$) for the feature in the value range ($-6.7$, $439.0$).
+					\end{itemize}
+					
+					A summary of the number of records above and below the MSE threshold (synthetic, non-synthetic) and the number of unique values for each feature can be seen in appendix \seeapendixfile{Experiment-1-autoencoder-foods-mse-summary-results.csv}.
+			         
+				\subsubsection{Experiment and results for the complementary non-AI method}
+				
+					As a partial complementary non-AI method, checking the column format using a regular expression was chosen. To the best of my knowledge, there is no entirely complementary method to replace the data quality measurement method described above using the autoencoder. The experiment was performed on the product price feature from Macy's dataset.
+					
+					The regular expression approach found all the data quality issues for the product price feature, but at the cost of data analysis, domain and technical knowledge, and manual effort to create a regular expression. The manual approach for a creating of the regular expression could be replaced by an automated approach \seesection{sec:analysis_dq_state_of_art}.
+					
+			
+	    	\subsection{Experiment 2 -- Association Rule Mining}
+	    	\label{subsec:experiment_2_association_rule_mining}
+    		
+    			The following experiment follows up on the section \seesection{sec:data_quality_measurement_using_asoc_rule_mining} where the theoretical basis of Association Rule Mining was introduced.
+    			
+    			The area of measuring data quality also includes the creation of business rules \cite{Ehrlinger2019}. Creating these rules is often subject to a manual process. Therefore, this experiment will focus on the potential use of the Apriori algorithm to reduce manual effort to extract business rules. The automation of this approach will be supported by the NLTK library, which focuses on statistical processing of natural language (NLP) \seesection{sec:experiment_environment}.
+    			
+    			For this experiment, Macy's dataset\seesection{subsec:consistent_dataset} was chosen as the dataset with business characteristics, as it is a dataset from the E-commerce domain. Within the domain, the experiment will attempt to answer the question: \texttt{"What are the relationships between the major products sizes?"}. For example, if the product has a size of "S" and "L", it also has a size of "M".
+    			
+    			The experiment will process the text feature $total\_sizes$ to answer the above mention question. The feature can contain the following value, for example:
+    			
+    			\begin{itemize}
+    				\item \texttt{["32C", "32D"", "32DD", "S", "M"]}
+    			\end{itemize}
+    			
+    			All values of this feature were joined into one a text corpus in order to perform fundamental frequency analysis, to determine the major products sizes within the corpus/feature. This step partially replaces the manual approach.
+    			
+    			An experiment dataset with indicator features (i.e. features containing $0$ or $1$ indicator value) was created based on the found major products sizes. For example, the feature name $total\_sizes\_contains\_L$.
+    			
+    			Subsequently, each record was analyzed to check if it contains any of the found major product sizes. If so, a value of $1$ was set to the adequate feature (e.g. $total\_sizes\_contains\_L$) and record. Otherwise, a value of $0$ was set.
+    			
+    			The experiment dataset was subsequently reduced to records containing at least two major product sizes values per record. In an example, if a record contains at least two major product sizes (e.g. "L", "M") in $total\_sizes$ feature, it has been included into the experimental dataset. This process reduced the number of dataset records for the next phase of the experiment.
+    			
+    			The next phase of the experiment is the application of the implemented Apriori algorithm (see~Algorithm~\ref{alg:apriori_algorithm}) to find the Association Rules on the experiment dataset containing indicator features. The last phase of the experiments is an evaluation and a visualization of the results.
+    		
+				\subsubsection{Association Rule Mining experiment and results}   
+				 
+				 	In~Figure~\ref{fig:experiment_2_apriori_macys_total_sizes_wordcloud} we can see a visual frequency analysis of the text corpus of products sizes (via WordCloud\footnote{\path{https://github.com/amueller/word_cloud}} library), which gave us a basic insight into the major values. Even such a basic visualization could give experts fundamental insights into the creation of business rules for a given domain. The Figure shows that we could consider the following values as the major products sizes -- '34C', '34D', '36C' a '36D'.
+				 	
+					\imagefigure{experiment_2_apriori_macys_total_sizes_wordcloud}{pdf/Experiment-2-apriori-macys-total-sizes-wordcloud.pdf}{Experiment 2 -- Macy's dataset -- WordCloud for the feature 'Total Sizes'.}	
+
+					The text corpus was subjected to a more detailed analysis using NLTK library for symbolic and statistical natural language processing (NLP). To preprocessing the text corpus into a well-defined sequences of linguistically-meaningful corpus units were used the following text preprocessing tasks:	
+					\begin{itemize}
+						\item Tokenization -- groups sequences of characters into logical elements called tokens (in the case of the experiment into words).
+						\item Filtration of punctuation, space characters and stop words (seldom provide any interesting information  -- e.g. 'a', 'the', "it").
+						\item Lematization -- finds lemma (canonical form) for a given token (e.g. 'were' -> 'be').
+						\item Stemming -- finds root form of a token (e.g. 'sitting' -> 'sit')
+					\end{itemize}
+					
+					Frequency analysis of tokens was performed on such the preprocessed textual corpus with the following result in the~Table~\ref{tab:exp2-token-frequency-analysis-macys} (the experiment was set up to search for 5 major products sizes). The more detailed analysis of the text corpus brought two new major products sizes -- 'L' and 'XL'. The value of '34D' did not fit into the top five major products sizes.
+							 	
+										\begin{table}[!h]
+\caption{Experiment 2 -- Token Frequency Analysis -- Macy's dataset -- Total sizes feature.}\label{tab:exp2-token-frequency-analysis-macys}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Major products size}                                     & \textbf{Frequency in the textual corpus} \\ \hline
+'L'                            & 20426           \\ \hline
+'XL'     & 13219            \\ \hline
+'36C'     & 10734            \\ \hline
+'36D'     & 10168            \\ \hline
+'34C'     & 9742            \\ \hline
+\end{tabular}
+\end{table}
+
+					For the five top product sizes found above, the experiment  dataset was created with the following indicator features:
+					
+					\begin{itemize}
+						\item $total\_sizes\_contains\_L$,
+						\item $total\_sizes\_contains\_XL$,
+						\item $total\_sizes\_contains\_36c$,
+						\item $total\_sizes\_contains\_36d$,
+						\item $total\_sizes\_contains\_34c$.
+					\end{itemize}
+					
+					The experiment dataset was subsequently reduced to records containing at least two major product values per record. This process reduced the number of dataset records from $40897$ to $23964$.
+				 
+				 The influence of the minimum support on the number of frequented itemsets was analyzed in the following part of the experiment. Based on Figure~\ref{fig:experiment_2_apriori_macys_dev_per_min_sup}, the expert should determine a minimum value for the support (Support threshold $\var{minsupp}$) in this experimental setup. This is a fundamental input parameter of this approach, but also of the Apriori algorithm itself (see~Algorithm~\ref{alg:apriori_algorithm} inputs). 
+				 	\imagefiguremedium{experiment_2_apriori_macys_dev_per_min_sup}{pdf/Experiment-2-apriori-macys-dev-per-min-sup.pdf}{Experiment 2 -- Macy's dataset -- Number of rule for the minimal support.}	
+				 	
+				 In the last phase of the experiment, the Apriori algorithm was run with the minimum support ($\var{minsupp}$) value of $0.55$. In~Figure~\ref{fig:experiment_2_apriori_macys_rules_metrics} we can see the found association rules and their metrics.
+				 	\imagefigurelarge{experiment_2_apriori_macys_rules_metrics}{pdf/Experiment-2-apriori-macys-rules-metrics.pdf}{Experiment 2 -- Macy's dataset -- Final Association Rules with metrics.}
+				 	
+				 The following summary is a detailed description of the found association rules and their consequences that are describing the relationships between the significant products sizes:
+				 
+					\begin{itemize}
+						\item Rule ($X \Rightarrow Y$):
+							\begin{itemize}
+								\item \texttt{['total\_sizes\_contains\_XL:1'] $\Rightarrow$ total\_sizes\_contains\_L:1}
+								\item Support: $0.55090$
+								\item Confidence: $1.0$
+								\item Lift: $1.8125$
+								\item Conviction: $0.0$
+%								\item The association rule appears in $55\%$ of all transactions. In $100\%$ all the transactions, if a transaction contains $X$, then it also contain $Y$. The parts of the association rule $X$ and $Y$ are dependent, based on the degree of dependence $1.81$. $X$ does not appear without $Y$.
+								\item \emph{Consequence}: \textsf{When the sizes of the product contain 'XL', it also contain the size of the product 'L'. The the product sizes containing 'XL' does not occur in transactions without the product size 'L'.}
+							\end{itemize}
+						\item Rule ($X \Rightarrow Y$):
+							\begin{itemize}
+								\item \texttt{['total\_sizes\_contains\_L:1'] $\Rightarrow$ total\_sizes\_contains\_XL:1}
+								\item Support: $0.55090$
+								\item Confidence: $0.9985$
+								\item Lift: $1.8125$
+								\item Conviction: $312.495$
+%								\item The association rule appears in $55\%$ of all transactions. In $99.85\%$ all the transactions, if a transaction contains $X$, then it also contain $Y$. The parts of the association rule $X$ and $Y$ are dependent, based on the degree of dependence $1.81$. $X$ appears often without $Y$.
+								\item \emph{Consequence}: \textsf{When the sizes of the product contain 'L', it also often contains the size of the product 'XL', but also exists transaction with the product sizes containing 'L' without the product size 'XL'.}
+							\end{itemize}
+						\item Rule ($X \Rightarrow Y$):
+							\begin{itemize}
+								\item \texttt{['total\_sizes\_contains\_L:1'] $\Rightarrow$ total\_sizes\_contains\_36d:0}
+								\item Support: $0.55011$
+								\item Confidence: $0.9971$
+								\item Lift: $1.7210$
+								\item Conviction: $146.346$
+								\item \emph{Consequence}: \textsf{When the sizes of the product contain 'L', it also often contains the size of the product '36D', but also exists transaction with the product sizes containing 'L' without the product size '36D'.}
+							\end{itemize}
+						\item Rule ($X \Rightarrow Y$):
+							\begin{itemize}
+								\item \texttt{['total\_sizes\_contains\_36d:0'] $\Rightarrow$ total\_sizes\_contains\_L:1}
+								\item Support: $0.55011$
+								\item Confidence: $0.9495$
+								\item Lift: $1.7210$
+								\item Conviction: $8.878$
+								\item \emph{Consequence}: \textsf{When the sizes of the product contain '36D', it also often contains the size of the product 'L', but also exists transaction with the product sizes containing '36D' without the product size 'L'.}
+							\end{itemize}
+					\end{itemize}									 	
+				This experiment revealed interesting relationships between significant product sizes, but considerable effort was required to preprocess the data to pass the appropriate input ($\var{transaction}\,\var{database}$) to the Apriori algorithm. 
+    			
+				Domain experts can create rules for regular data quality monitoring based on the found association rules. The NLP approach used in the experiment greatly facilitated the process of preprocessing the data into the final form. The complexity of data preprocessing for Association Mining algorithms may be one of the reasons why this approach is not widely supported by data quality tools \cite{Ehrlinger2019}.	
+						
+				\subsubsection{Comparison with a complementary non-AI approach}
+				
+				The nearest complementary approach to the performed experiment is the manual definition of business rules with knowledge of domain requirements. Data quality tools usually implement the creation and application of business rules, where for some cases of data (e.g. zip codes), there are predefined rules (e.g. validation of addresses, data types) \cite{Ehrlinger2019}.
+
+				In tools such as Informatica Rule Builder, it is possible to define a set of conditions (IF-THEN statement) that must be met \cite{Informatica2014}. Alternatively, it is possible to select actions that will be taken if the conditions are not met \cite{Informatica2014}. Tools such as Informatica Rule Builder implement a graphical environment for defining business rules. It is a sophisticated tool with various functions for defining rules and requires considerable expertise and domain knowledge for business rules to be adequately implemented.
+				
+				The experiment performed above is specialized for a specific type of textual data. Thus the experiment was able to implement partial automation at the expense of narrowing the problems. 
+				
+				Knowledge of the data semantics is essential information for the possibility of implementing automation in the field of defining business rules. The approaches described in~Section~\ref{sec:analysis_dq_state_of_art} could be applied (Automatically Generating Regular Expressions via Genetic Programming, Semantic data types detection) to determine the semantic structure of the data or the data format. 
+				
+				Subsequently, rules could be generated based on the found semantic information (e.g. a regular expression for the data format) or the information about semantic data structure could be passed to an associated algorithm addressing the data quality. In an example, rules could be found for individual parts of a data format (e.g. the part of the data format intended for hours must be in the range of values between $0-23$). It could help the algorithm to simplify usage of automation process. These approaches could be integrated into the experiment as an extension of this work.

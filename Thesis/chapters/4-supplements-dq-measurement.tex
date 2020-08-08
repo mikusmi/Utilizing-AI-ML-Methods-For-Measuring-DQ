@@ -1,0 +1,30 @@
+\chapter{Supplement to Data quality}
+	
+		The following sections contain theoretical supplement that did not fit into the main content of the work.
+		
+	\section{Data quality unit}
+	\label{sec:data_quality_unit}  
+	
+				For a full understanding of data quality methods it is practical to have an overview of the inputs and outputs of a general method. To illustrate and understand the context of the methods, a theoretical unit of data quality has been developed (see Figure~\ref{fig:dq_unit}), which depicts data quality methods for higher abstraction. It is only a theoretical scheme intended to consolidate the data and application context of data quality methods. The schema provides an option for possible expansion. The scheme follows the general needs of data quality \seesection{subsec:selection_criteria_for_data_quality_tool}.
+				
+				Data quality unit is a novelty idea that was invented based on the findings in this diploma thesis.
+	
+				\imagefigurelarge{dq_unit}{pdf/DQ_unit.pdf}{Data quality unit.}	
+		
+				First we need to understand the incoming data \seesection{ch:theoretical_framework}. The inputs to the data quality method are data categories \seesection{subsec:data_categories} that should ideally contain the data itself. They may also contain metadata information about the input data (this is a form of Data profiling)\seesection{sec:understanding_data_quality}:
+		
+				\begin{itemize}
+					\item data scheme (a structure for organizing and classifying data),
+					\item data format,
+					\item data size,
+					\item an expected time of arrival,
+					\item an expected range of values.
+				\end{itemize}
+			
+				The metadata mentioned above can be automatically determined from the data of DQ Mem Unit (Data Quality Memory Unit). DQ Mem Unit is a memory unit for storing metadata about its operation ideally in the short term (e.g. information about previous data within a time window).
+			
+				Ideally, the input values of the method should be tested automatically. If any of the values do not comply with the set rules, for example in DQ parameters or DQ Mem Unit, an adequate message should be sent in a timely manner via the communication channel to the communication gateway (e.g. email, SMS or using a communication platform like Slack, Hangouts Chat, Microsoft Teams). For example, this may be an indication that the expected data format has changed or that the size of the input file does not match average values (e.g. Anomaly Detection). It is a form of data quality monitoring.
+			
+				Furthermore, a data quality method (e.g. Data cleansing) itself is performed, that can be parameterized (DQ parameters -- data requirements or data quality algorithm), as well. Method progress and data information (e.g. data profiling information) are recorded in DQ Mem Unit in a queryable structured data format and appropriately historized for monitoring purposes. These data may engage long-term checks to monitor data quality trends (e.g. the percentage of recorded null values for the last week varies by more than two standard deviations for data for the last month or data change within a specified window). At the end of an ongoing method, its performance can also be evaluated (e.g. a slowdown in the method performance was detected within one week) and a message about performance issue should be sent.
+		
+				In addition to the alarm messages mentioned above and to the storage of operational data, we may need to store the output from the data quality method in the output data source and perform adequate checks on the output data. For example, in the case of a data enrichment or data cleansing method -- we need to store the data and check whether they meet the requirements (e.g. schema, format, referential integrity). The data may also be provided with data quality tags (e.g. information about a source of enrichment for a record), for example, in the form of metadata. Data quality output information can be visualized, as well. The read performance of Output data source should not be affected by Data Quality Unit.

@@ -1,0 +1,209 @@
+\chapter{Data quality measurement methods}
+\label{ch:data_quality_measurement_methods}
+
+		This section assesses methods for measuring data quality. The main goal is not only to theoretically describe the methods in detail, but to assess their capabilities, limits and find their practical use for measuring data quality.
+		
+		In the first section is introduced the analysis of state of the art approaches to enhance data quality in the context of the measurement \seesection{sec:analysis_dq_state_of_art}. 
+
+		The next section \seesection{sec:data_quality_measurement_using_autoencoder} follows up on the previous section, with the difference that the AI approaches in it (i.e. Autoencoder, Association Rule Mining) are analyzed in more detail and described theoretically. The analysis of the approaches will also serve as a theoretical basis for experiments \seesection{ch:experiments_and_results}.
+
+	\section{Analysis of state-of-the-art approaches to enhance DQ}
+	\label{sec:analysis_dq_state_of_art}
+		
+			This section summarize interesting AI and non-AI data quality methods. Trivial methods of measuring data quality will be omitted, such as measuring cardinality (e.g. number of rows, empty/null values) or value distribution (e.g. min, max, mean, quartiles, cardinality).
+			
+			Current general-purpose data quality tools do not fully utilize the potential of the ML-based method \cite{Ehrlinger2019}. Although several vendors claim to implement ML-based methods, the survey \cite{Ehrlinger2019} found that no or only limited documentation of concrete ML-based algorithms is available \cite{Ehrlinger2019}.		
+		
+			According to the survey \cite{Ehrlinger2019}, it is important not only to focus on enhancement of the detection of data quality errors via AI/ML methods but also on the desirable core characteristics (such as wide applicability of the methods, easy to use, interpret, store and deploy, and the methods should have short response times) \cite{Ehrlinger2019}.	
+		
+			The following approaches were evaluated as interesting methods with the potential to measure data quality:
+					
+			\begin{itemize}
+				\item \emph{Clustering} -- Clustering approach can be either used to detect outliers in a single column, or to detect similar or duplicate record within a table \cite{Ehrlinger2019}. In the OpenRefine data quality tool, the clustering approach\footnote{https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth} is used to find different values that can represent the same thing. As part of the measurement, users could be informed about clusters and their characteristics representing these similar records.
+				\item \emph{Benford's law}\footnote{https://en.wikipedia.org/wiki/Benford\%27s\_law} -- Benford's law is focus on distribution of first digit in numeric values \cite{Ehrlinger2019}. A common application is fraud detection (bank transactions) \cite{Ehrlinger2019}. However, the method could be used to detect anomalies in Machine data \seesection{sub:data_areas} as well. This prevention can, for example, save industrial machines from destruction based on abnormalities caused by a technical defect. The research \cite{Ehrlinger2019} shows that this method is not sufficiently used in data quality tools.
+				\item \emph{Semantic data types detection} -- For example, generic semantic data types are codes, date, URLs or identifiers (defined by generic patterns) and non-generic semantic data types include city, country, or name \cite{Ehrlinger2019}. This approach can have a significant impact on the automation of ML-based methods. Some machine learning methods (e.g. Autoencoder) could benefit from knowledge about the semantic data type of their input values. In an example, Date data type was detected for a feature, and it would then be appropriately tokenized to preserve semantic information. Current implementations rely on dictionary lookups and regular expression matching \cite{Hulsebos2019}. However, these implementations have theirs limits (e.g. dirty data and detection of a limited number of data types) \cite{Hulsebos2019}, but exist a state of the art effort (\textsf{Sherlock}: A Deep Learning Approach to Semantic Data Type Detection developed by MIT \cite{Hulsebos2019}) based on a multi-input deep neural network that seeks to overcome these limits.
+				\item \emph{Automatically Generating Regular Expressions via Genetic Programming} -- In the field of the automatic generation of regular expressions exists a research \cite{Bartoli2016} (with an implementation\footnote{https://github.com/MaLeLabTs/RegexGenerator} of a web application\footnote{http://regex.inginf.units.it/}) based on Genetic Programming achieving very good results. The implementation of Automatic regular expression synthesis is able to work only on examples of the desired behavior \cite{Bartoli2016}. This approach can address context-dependent extractions or widely different formats \cite{Bartoli2016}. The synthesis of regular expressions has the potential to measure data quality in the field of automatic measurement of a number of wrong format records.
+%				\item \emph{Duplicate detection via Latent layer in Autoencoder} -- .
+				\item \emph{Running statistics of streaming data}  -- Running statistics (such as variance, mean or standard deviation)\footnote{\path{https://www.johndcook.com/blog/standard_deviation/}} could be used to measure data quality on stream data in order to perform continuous online monitoring of outliers. For example, algorithms of this type include Welford's online algorithm\footnote{\path{https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance}}.
+				\item \emph{Duplicate detection via NLP approaches with XGBoost algorithm} -- One of the most interesting approaches to detecting text duplicates may be the development of a machine learning model (e.g. XGBoost\footnote{\path{https://xgboost.readthedocs.io/en/latest/}}) with NLP approaches. NLP approaches that would extract features from the text for use in machine learning modeling using XGBoost algorithm are Word2Vec, Bag-of-Words, TF-IDF or Fuzzy string matching\footnote{\path{https://github.com/seatgeek/fuzzywuzzy}} (via Levenshtein Distance). There are prototypes of implementations\footnote{\path{https://github.com/susanli2016/NLP-with-Python/blob/master/Word2vec_xgboost.ipynb}}\footnote{\path{https://github.com/abhishekkrthakur/is_that_a_duplicate_quora_question}} that achieve good results on the Quora dataset\footnote{\path{https://www.kaggle.com/sambit7/first-quora-dataset}} for finding duplicate questions.
+			\end{itemize}		
+																	
+	\section{Data quality measurement using Autoencoder}
+	\label{sec:data_quality_measurement_using_autoencoder}
+	
+		The section will discuss theoretically the use of neural autoencoders for measuring data quality. A description of the implementation of this approach can be found in its experimental part \seesection{subsec:experiment_1_autoencoder}. The neural autoencoder is unsupervised ML technique and feed-forward neural network \cite{Purkait2019}. The general idea consists of the setting an encoder and a decoder as neural networks that learn to encode the most representative features from input data to the latent space using an iterative optimization process evaluated by a reconstruction error \cite{Rocca2019}\cite{Purkait2019}.
+		
+		In addition to the encoder and decoder, the autoencoder architecture also consists of a latent layer. The input layer of the encoder and the output layer of the decoder has the same number of neurons. The last layer of the encoder is the already mentioned latent layer. In the case of undercomplete autoencoder (see~Figure~\ref{fig:autoencoder}), the latent layer has a smaller dimension than the input. The number of neurons in the encoder layers gradually decreases forward, while in the decoder the number of neurons in the layers gradually increases forward. The entire autoencoder could be seen as layers of interconnected neurons, where encoder encodes input data, and then the main goal of the decoder is to reconstruct the input using the latent layer \cite{Purkait2019}.   
+		
+		\imagefiguremedium{autoencoder}{png/Autoencoder.png}{Example of an undercomplete autoencoder \cite{Purkait2019}.}		
+		
+		The primary domain of autoencoders is the ability to discover low-dimensional representations of high-dimensional data (i.e. dimensionality reduction), while still attempting to preserve the fundamental attributes present therein, without explicitly relying on human-engineered assumptions \cite{Purkait2019}. Based on this elementary autoencoder feature, the autoencoder was selected as an ML method capable of automating data quality measurements. 
+		
+		Before introducing autoencoder in the context of measuring data quality, it is appropriate to get acquainted with the known limits of autoencoders.
+
+		\begin{itemize}
+			\item \emph{Data-specific} -- The usefulness of the autoencoder is closely related to the similarity of the data on which the autoencoder was trained. This limitation also reduces the scalability of these algorithms \cite{Purkait2019}.
+			\item \emph{Lossy output} -- In simplicity, this means that the compression (encode part of a autoencoder) and decompression (decode part of a autoencoder) operations reduce the performance of the neural network, leading to a less accurate representation compared to the input data \cite{Purkait2019}.
+			\item \emph{Problem with text and sequences} -- Autoencoders are designed to work with fixed length inputs \cite{Brownlee2018}.
+			\item \emph{Sufficient amount of training data} -- The need to pay attention to a sufficient amount of training data depending on the complexity of the problem and the learning algorithm \cite{Brownlee2017a}. To find a sufficient amount of training data is an iterative problem that needs to be solved by empirical investigation (e.g. analysis of similar studies, use of domain expertise or statistical heuristics) \cite{Brownlee2017a}. Nonlinear algorithms usually capture more complex nonlinear relationships between input and output features \cite{Brownlee2017a}. These algorithms are often very flexible, more powerful, and we can present them with more random domain structures, but this performance is redeemed by more data than are required by linear algorithms \cite{Brownlee2017a}. In general, tens or hundreds of thousands training records for "average" modeling problems and millions or tens-of-millions for "hard" problems (e.g. complex deep learning) \cite{Brownlee2017a}.
+			\item \emph{An issue with the elementary autoencoder} -- Vanilla autoencoder model (a neural network with one hidden layer) is unable to randomly select the values for the decoder to generate the best possible data reconstruction (without explicit regularization, some points of the latent space are "meaningless" once decoded) \cite{Rocca2019}.
+		\end{itemize}
+
+		There is one specific type of autoencoder the Variational Autoencoder (VAE) that solves latent space organization \cite{Purkait2019}\cite{Rocca2019}. VAEs are regularized versions of autoencoders making the generative process possible \cite{Purkait2019}. VAEs are better at catching properties of stochastic data and are better for generating new samples \cite{Rocca2019}. Still, the produced samples are often poor quality, mostly on the boundaries between two classes (for example, the shape between a circle and a triangle) \cite{Rocca2019}. VAEs are also limited with the fact, that they can only learn the properties of multiple Gaussian distributions, but what about, for instance, a uniform distribution \cite{Janz2019}.  The issue with the distribution described above can be solved by Adversarial Autoencoders (AAE) \cite{Janz2019}, but there are out of scope this work. The idea behind it is that you train the encoder to produce a latent space that looks like a prior distribution of your choice \cite{Janz2019}. VAEs and AAEs types of autoencoders can be used to extend this work.
+		
+		From this point, the section discusses the use of the autoencoder to measure data quality. 
+		
+		Based on the theoretical framework \seesection{ch:theoretical_framework}, data quality measurement using an autoencoder can be used in the most straightforward application for structured data \seesection{subsec:types_of_data} at the aggregation level of the attribute (i.e. column values are input for the autoencoder) and record (i.e. summary of results from individual "column" autoencoder within one record) \seesection{subsec:general_data_characteristics}.		
+		
+		Autoencoder should contribute to data quality measurement with greater flexibility, independence of domain knowledge and the ability to detect data quality deficiencies with greater automation. Therefore, this work will use the ability of the autoencoder to detect outliers in measuring data quality. 
+		
+		In current data quality tools, only simple outlier detection methods (e.g. box plots) are used compared to the current state of research \cite{Ehrlinger2019}. The tools do not widely or at all support multivariate outlier detection or one of the more sophisticated approaches, such as z-scores, linear regression models or probability models \cite{Ehrlinger2019}. Several tools are using Clustering (e.g. k-means) as an outlier detection method \cite{Ehrlinger2019}.
+			
+		After training the autoencoder with the input data, the newly arriving data can be evaluated for a reconstruction error. The reconstruction error should be high enough for outlier data.
+		
+		An autoencoder could be more independent on the type of data attribute when the input values will be converted into a text representation and then into a numerical representation, with the need to think about the semantic representation of the text to preserve the meaning of the converted symbols. One option is to use a Semantic data types detection \seesection{sec:analysis_dq_state_of_art} or NLP (Natural language processing) approaches, which are outside the scope of this work. Therefore, only fundamental approaches of a conversion text representation into a numerical representation will be applied in the experiment. More advanced approaches can be used to extend this work.
+		
+		This solution can be partially ineffective on sparse data because the autoencoder learns at little informative values (e.g. null, NaN). Data with high heterogeneity is also not an adequate input. In this case, we may notice a high number of outliers, making this solution ineffective.
+
+		The approach described above requires to know the longest possible length of the encoded sequence of input data in advance.
+
+		This approach do not solve the relationships between other information in the table or database. The method only solves the adequacy of a single column value. We can determine how adequate the whole row is from the individual results of the autoencoder for column values. The advantage of this approach is that it can locate the quality error within the column. In order to determine when a given whole row does not meet the quality, it is necessary to establish a metric that would numerically determine the quality by combining results for all columns or subset or columns of the given row. Such a metric could be set as the sum of all column reconstruction errors (e.g. MSE) per row. A detailed description with a figure (see~Figure~\ref{fig:autoencoder_experiment_design}) of this approach can be found in the experiment section of this thesis.
+		
+		This method for measuring data quality is expected to be able to detect fundamental shortcomings in data quality with an emphasis on reducing the need for domain knowledge (e.g. the correct format or structure of attributes) or human intervention. In practice, the work will experiment with this method for measuring data quality in autoencoder experiment \seesection{subsec:experiment_1_autoencoder}.
+		
+	\section{Data quality measurement using Association Rule Mining}
+	\label{sec:data_quality_measurement_using_asoc_rule_mining}
+			
+		This section introduce some of the essential concepts related to association rule mining and present Apriori algorithm in the context of data quality measurement.
+		
+		Association rule learning/mining is a rule-based machine learning method for discovering underlying relations between features in the data that can be expressed in the form of an \texttt{IF-THEN} rule \cite{Zhang2002}\cite{Malik2018}.
+
+		Association rule mining can be formally defined as follows \cite{Zhang2002}\cite{Agrawal1993}:
+
+		\begin{itemize}
+			\item $I = \{i_1, i_2, \dotsc ,i_m\}$ is a set of $\var{items}$ (e.g. milk, cherries, beer).
+			\item $D = \{t_1, t_2, \dotsc ,t_n\}$ is a set of transactions, called a $\var{transaction}\,\var{database}$, where each transaction $t$ has $\var{transaction}\,\var{ID}$ and contains a subset of the $\var{items}$ in $I$.
+			\item $X \Rightarrow Y$, where $\var{itemsets}$ $X, Y \subseteq I$ and $X$, $Y$ do not intersect, is a $\var{association}\,\var{rule}$ (more specific version \cite{Agrawal1993} is $X \Rightarrow i_j$ for $i_j \in I$). 
+%			\item $T$ is a set of transactions of a given $\var{transaction}\,\var{database}$.
+		\end{itemize}
+			
+		There are various metrics (e.g. Support, Confidence, Lift, Conviction) to achieve a selection of underlying rules from a set of all possible rules.			
+		
+		\emph{Support} refers to the frequency of an $\var{itemset}$ $X$ in a $\var{transaction}\,\var{database}$ $D$, and is defined as the proportion of transaction $t$ in the $\var{transaction}\,\var{database}$ $D$ which contains the $\var{itemset}$ $X$:
+		
+				\begin{equation}
+					\label{eqn:support}
+					\var{supp}(X) = \frac{|X(t)|}{|D|}\text{,}\:(\text{range:}\,[0,1])\text{,}
+				\end{equation}
+				
+		where $X(t) = \{t\,\text{in}\,D|t\,\text{contains}\,X\}$ \cite{Zhang2002}\cite{Agrawal1993}. In the example, if an $\var{itemset}$ $X$ occurs $7$ times in a $\var{transaction}\,\var{database}$ $D$ of $10$ transactions, then a support is $0.7$ since it occurs in $70\%$ in all transactions in the $\var{transaction}\,\var{database}$ $D$.
+		
+		An $\var{itemset}$ $X$ in a $\var{transaction}\,\var{database}$ $D$ that its support is greater than or equal to the minimal support threshold ($\var{minsupp}$) given by users or experts, is called a $\var{frequent}\,\var{itemset}$ \cite{Zhang2002}.
+			
+		The support of the $\var{association}\,\var{rule}$ $X \Rightarrow Y$ is the support of $X \cup Y$  \cite{Zhang2002}.
+		
+		\emph{Confidence} of an $\var{association}\,\var{rule}$ $X \Rightarrow Y$ in the context of $\var{transaction}$ $\var{database}$ $D$ refers to the proportion of the transactions that contains $X$ which also contains $Y$ \cite{Zhang2002}\cite{Malik2018}. Specifically, confident is defined as \cite{Zhang2002}:
+		
+				\begin{equation}
+					\label{eqn:confidence}
+					\var{conf}(X \Rightarrow Y) = \frac{\var{supp}(X \cup Y)}{\var{supp}(X)} = \frac{|(X \cup Y)(t)|}{|X(t)|}\text{,}\:(\text{range:}\,[0,1]) \text{.}
+				\end{equation}
+		
+		In the example, if a rule $X \Rightarrow Y$ has a support of $0.27$ since the rule occurs in $27\%$ of all the transactions. And if the rule $X \Rightarrow Y$ confidence is $0.74$, it means that for $74\%$ of all the transactions containing $X$ the transactions also contains $Y$.
+		
+		Support (frequencies of occurring patterns \cite{Zhang2002}) and confidence (strength of implication \cite{Zhang2002}) are elementary quality measurements of the each $\var{association}$ $\var{rule}$ and measure how underlying the $\var{association}$ $\var{rule}$ is \cite{Agrawal1993}.
+		
+		\newpage
+		Just as we can set a minimal support threshold ($\var{minsupp}$) for a given $\var{association}$ $\var{rule}$ $X \Rightarrow Y$, thus we can condition the $\var{association}$ $\var{rule}$ with a minimal threshold confidence ($\var{minconf}$), which is given by users or experts, as well. An $\var{association}$ $\var{rule}$ $X \Rightarrow Y$ meeting the requirements of the described minimum thresholds is called a strong/valid rule and is defined as \cite{Zhang2002}:
+		
+				\begin{enumerate}
+				\label{eqn:strong_rule}
+					\item $\var{supp}(X \cup Y) \geq \var{minsupp}\text{,}$
+					\item $\var{conf}(X \Rightarrow Y) = \frac{\var{supp}(X \cup Y)}{\var{supp}(X)} \geq \var{minconf}\text{.}$
+				\end{enumerate}
+		
+		\emph{Lift} is a quality measurements similar to the confidence but it also accounts for how popular $Y$ is \cite{Hahsler2005}. The lift of the $\var{association}$ $\var{rule}$ $X \Rightarrow Y$ gives the correlation between $X$ and $Y$, and is defined as \cite{Hahsler2005}:
+		
+				\begin{equation}
+					\label{eqn:lift}
+					\var{lift}(X \Rightarrow Y) = \frac{\var{conf}(X \Rightarrow Y)}{\var{supp}(Y)} = \frac{\var{supp}(X \cup Y)}{\var{supp}(X)\times\var{supp}(Y)}\text{,}\:(\text{range:}\,[0,\infty]) \text{.}
+				\end{equation}
+
+		\vspace{2cm}
+		The consequences arising from the lift value are \cite{Malik2018}:
+		
+			\begin{itemize}
+				\item If $\var{lift}(X \Rightarrow Y) = 1$, then $X$ and $Y$ are independent and the $\var{association}$ $\var{rule}$ $X \Rightarrow Y$ can not be derived from the $\var{transaction}\,\var{database}$ $D$.
+				\item If $\var{lift}(X \Rightarrow Y) > 1$, then $X$ and $Y$ are dependent and the $\var{association}\,\var{rule}$ $X \Rightarrow Y$ can be considered as potentially useful, based on the degree of dependence.
+				\item If $\var{lift}(X \Rightarrow Y) < 1$, then the presence of $X$ in the $\var{association}\,\var{rule}$ $X \Rightarrow Y$ have negative effect on $Y$.
+			\end{itemize}
+	
+		\newpage
+		\emph{Conviction} was developed as an alternative to confidence and is similar to lift \cite{Hahsler2020}. In contrast to lift, it uses the information of the absence of $Y$ in $\var{association}\,\var{rule}$ $X \Rightarrow Y$. Conviction  of an $\var{association}\,\var{rule}$ $X \Rightarrow Y$ in the context of $\var{transaction}\,\var{database}$ $D$ refers to the probability that $X$ appears without $Y$ if they were dependent with the actual frequency of the appearance of $X$ without $Y$ \cite{Brin1997}\cite{Hahsler2020}. In other words, conviction measures the expected error of an $\var{association}\,\var{rule}$ $X \Rightarrow Y$ (i.e. How often $X$ occurs in $\var{transaction}\,\var{database}$ $D$ where $Y$ does not.) \cite{Zaki2014}.
+		
+				\begin{equation}
+					\label{eqn:conviction}
+					\var{conv}(X \Rightarrow Y) = \frac{1 - \var{supp}(Y)}{1 - \var{conf}(X \Rightarrow Y)} = \frac{P(X)\times P(Y)}{P(X) \cup P(Y)}\text{,}\:(\text{range:}\,[0,\infty])\text{.}
+				\end{equation}
+				
+		The conviction values equal to $1$ indicates independence of the rule and rules that always hold have the the conviction values $\infty$ \cite{Hahsler2020}. A high value therefore means that $Y$ depends strongly on $X$. The conviction values in $(0,\:1)$ means that $X$ and $Y$ are independent. In example, the conviction value of $1.66$ tell us that the $\var{association}\,\var{rule}$ $X \Rightarrow Y$ would be incorrect $66\%$ ($1.66\,\text{times}$) more often if $X$ and $Y$ of the rule were independent \cite{Hahsler2020}. 
+			
+		In addition to the commonly used interest measures mentioned above, exists others \cite{Hahsler2020} (see the \href{https://michael.hahsler.net/research/association_rules/measures.html}{link}).
+				
+			There are various association rule mining algorithms (e.g. AIS, SETM, Apriori, Aprioritid, Apriorihybrid, FP-growt) \cite{Kumbhare2014}, for this work was chosen the most commonly used, \emph{Apriori algorithm} \cite{Agarwal1994} (see~Algorithm~\ref{alg:apriori_algorithm}). Apriori algorithm uses BFS algorithm to find the support for of itemsets and generate candidates so that exploits the downward closure property of support \cite{Agarwal1994}.
+		
+\begin{algorithm}[H]
+	\label{alg:apriori_algorithm}
+	\SetAlgoLined
+	\SetKwData{K}{k}
+	\SetKwData{Count}{count[$c$]}
+	\SetKwInOut{Input}{input}
+	\SetKwInOut{Output}{output}
+
+	\Input{$\var{Transaction}\,\var{database}$ $D\text{,}\,$ \text{Support threshold}\:$\var{minsupp}$}
+	\Output{Frequent $\var{Itemsets}$}
+	\BlankLine
+	
+	\tcp{$L_k$: Frequent itemset of size \K}
+	$L_1 \leftarrow \{\text{large 1-itemsets}\}$\;
+	\K $\leftarrow 2$\;
+	\While{$L_{k-1} \neq \emptyset$}{
+		\tcp{New candidates, $C_k$: Candidate itemset of size \K}
+		$C_k \leftarrow \{c = a \cup \{b\}\:|\:a \in L_{k-1} \wedge b \notin a\text{,}\,\{s \subseteq c\:|\:\lvert s \rvert\ = k-1\}\subseteq L_{k-1}\}$\;
+		\For{$\var{transactions}\,t \in D$}{
+			\tcp{$M_t$: Candidates in transaction $t$}
+			$M_t \leftarrow \{c \in C_k\:|\:c \subseteq t\}$\;
+			\For{$\var{candidates}\,c \in M_t$}{
+				\Count$\leftarrow\:$\Count$+1$\;
+			}
+			$L_k \leftarrow \{c \in C_k\:|\:$\Count$\geq \var{minsupp}\}$\;
+			\K $\leftarrow$ \K $+1$\;
+		}
+ 	}
+ 	\Return $\bigcup\limits_{k} L_k$
+ \caption{Apriori algorithm \cite{Agarwal1994}.}
+\end{algorithm}
+
+		Association Rule Mining typically consists of two parts \cite{Zhang2002}\cite{Agarwal1994}:
+		
+		\begin{itemize}
+			\item \emph{Frequent itemsets generation} -- generate all frequent
+itemsets in a given $\var{transaction}\,\var{database}$ $D$ based on support threshold $\var{minsupp}$. This is the Apriori algorithm (see~Algorithm~\ref{alg:apriori_algorithm}).
+			\item \emph{Rule Generation} -- generate all strong $\var{association}\,\var{rules}$ from the frequent itemsets that have support and confidence greater than the user-specified $\var{minsupp}$ and $\var{minconf}$ thresholds (or alternatively use other measures like Lift \cite{Malik2018} and Conviction \cite{Hahsler2020}). 
+		\end{itemize}
+
+		\emph{Limitation of Apriori algorithm} is that it may suffer from large computational overheads when the number of frequent itemsets is very large because it requires a full $\var{transaction}\,\var{database}$ $D$ scan many times (i.e. finding candidate itemsets) \cite{Zhang2002}\cite{AlMaolegi2014}. Due to this, Apriori algorithm will be very low and inefficiency on the a large $\var{transaction}\,\var{database}$ $D$ when memory capacity is limited, because the algorithm assumes that the database is permanent in the memory \cite{AlMaolegi2014}. There are approaches and researches addressing these shortcomings of the Apriori algorithm (e.g. advanced pruning) \cite{Zhang2002}\cite{AlMaolegi2014}. Due to the scope of this work, these additional approaches will not be considered, but are noted, for the possibility of extending this work or experiments.		
+							
+		This method has been chosen for measuring data quality because of its ability to identify a set of underlying rules that collectively represent knowledge within data. The second reason is that data quality tools rarely support association rule mining because customers and vendors do not consider it as part of data quality \cite{Ehrlinger2019}. No single tool analysed in the survey \cite{Ehrlinger2019} offers an association rule mining approach.
+		
+		In the following paragraphs, the Association Rule Mining will be placed in the context of data quality measurement. The Association Rule Mining can be used to find relationships (rules) between columns (multi-column profiling) \cite{Ehrlinger2019}, that can be seen in the theory from the beginning of the section.
+		
+		The association rule extraction approach could find objective relationships based on the metrics presented above with significant independence from data knowledge or application context to developing useful data quality measurement. In an example, extracted strong association quality rules could proactively check data using information about their strength (e.g. using some of the metrics described above).
+		
+		In this regard, we encounter the limitation that the Association rule mining approach is originally designed to work with qualitative and discrete data attributes \seesection{subsec:data_attribute_types}  \cite{Moreno2007}. However, it is possible to discretize any continous data attributes into discrete intervals \cite{Moreno2007}. It is necessary to split the range of values into a suitable number of intervals during the discretization process \cite{Moreno2007}. The discretization process is critical in order to reduce the large amount of intervals to obtain high confidence rules \cite{Moreno2007}. Nevertheless, the too small intervals can lead to low support rules \cite{Moreno2007}.
+		
+		Several discretization approaches are available such as equal-width and equal-depth methods \cite{Moreno2007}. There are univariate or multivariate approaches to the discretization process \cite{Moreno2007}. As the name implies, the univariate discretization considers one continuous attribute at a time and is often used and simple while multivariate discretization considers simultaneously multiple attributes \cite{Moreno2007}. The multivariate discretization presents more advantages, especially in the case of discovering association rules, that look for a relationship across multiple attributes \cite{Moreno2007}. There are also science efforts to improve association rule algorithms, in terms of performance or reducing the set of rules with a focus on strong rules \cite{Liu2012}. Appropriately rescaled input data (values of $\var{Transaction}\,\var{database}$ $D$) should reduce interest in one of the numerical attributes by transforming all the numerical attributes on the same scale (e.g. Decimal Scaling, Min-Max Normalization, Z-score Normalization) \cite{Tan2013}.
+
+		The above findings show that the main challenge of this approach is data preprocessing. This greatly complicates the automation of this approach. Methods for data preprocessing should be chosen so that the way of automation is supported as much as possible. 
+							
+		In practice, the work will experiment with this approach for measuring data quality in Association rule mining experiment \seesection{subsec:experiment_2_association_rule_mining}.

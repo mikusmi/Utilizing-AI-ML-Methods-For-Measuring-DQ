@@ -1,0 +1,201 @@
+% https://github.com/hroncok/fit-thesis-tips
+% options:
+% thesis=B bachelor's thesis
+% thesis=M master's thesis
+% czech thesis in Czech language
+% english thesis in English language
+% hidelinks remove colour boxes around hyperlinks
+
+% arara: xelatex: { shell: yes }
+% arara: makeglossaries
+% arara: biber
+% arara: xelatex: { shell: yes }
+% arara: xelatex: { shell: yes }
+\documentclass[thesis=M,english,hidelinks]{template/FITthesisXE}
+
+\bibliography{library.bib}
+
+\usepackage{import}
+\usepackage{booktabs}
+\usepackage{dirtree}
+
+\usepackage{nameref}
+
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
+%\usepackage{url}
+
+\usepackage{xevlna}
+
+% definitions
+\usepackage{amsthm}
+
+\newcommand{\var}[1]{{\operatorname{\mathtt{#1}}}}
+
+% bulb symbol
+\usepackage{fontawesome5}
+
+% math
+\usepackage{mathtools}
+
+% pseudocode (http://ftp.cvut.cz/tex-archive/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf)
+\usepackage[ruled,vlined]{algorithm2e}
+
+% tables
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{makecell}
+
+% https://tex.stackexchange.com/questions/234938/when-using-tabularx-and-x-how-to-make-the-text-vertically-centered
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+
+% TODO notes package
+% http://ftp.cvut.cz/tex-archive/macros/latex/contrib/todonotes/todonotes.pdf
+\usepackage{todonotes}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\setcounter{tocdepth}{2}
+
+% from https://www.herout.net/blog/2017/03/pomalu-uz-pojdme-psat/
+%\usepackage{xcolor} 
+%\newcommand{\todo}[1]{
+%    \textcolor{red}{\textbf{[[#1]]}}
+%}
+
+%\usepackage{blindtext}
+%\newcommand{\blind}[1][1]{
+%	\textcolor{gray}{\Blindtext[#1][1]}
+%}
+
+\usepackage{blindtext}
+\newcommand{\blind}[1][1]{
+	\textcolor{gray}{Blind off!}
+}
+
+%\newcommand{\blindmathpage}{
+%	\textcolor{gray}{\blindmathpaper}
+%}
+
+% Sections spacing
+%\usepackage{titlesec}
+%\titlespacing*{\section}
+%{0pt}{2.7ex plus 1ex minus .2ex}{1.4ex plus .2ex}
+%\titlespacing*{\subsection}
+%{0pt}{2.7ex plus 1ex minus .2ex}{1.4ex plus .2ex}
+%\titlespacing*{\subsubsection}
+%{0pt}{2.7ex plus 1ex minus .2ex}{1.4ex plus .2ex}
+
+\newcommand{\blindmathpage}{
+	\textcolor{gray}{Blind math page off!}
+}
+
+\newcommand{\importpdftex}[2]{
+    \def\svgwidth{\columnwidth}
+    \import{media/#1/}{#2.pdf_tex}
+}
+
+% usage: \imagefigure{filename}{description}
+\newcommand{\imagefigurefull}[4]{
+    \begin{figure}[htbp]
+    \centering
+        \includegraphics[width=#4\linewidth]{media/#2}
+        \caption{#3 \label{fig:#1}}
+    \end{figure}
+}
+
+\newcommand{\seesection}[1]{(see Section \ref{#1} about \nameref{#1})}
+
+\newcommand{\seeapendixfile}[1]{
+(see \nameref{ch:appendix_files_list} -- \path{#1})
+}
+
+\newcommand{\imagefigurelarge}[3]{
+    \imagefigurefull{#1}{#2}{#3}{.99}
+}
+
+\newcommand{\imagefiguremedium}[3]{
+    \imagefigurefull{#1}{#2}{#3}{.79}
+}
+
+\newcommand{\imagefigure}[3]{
+    \imagefigurefull{#1}{#2}{#3}{.6}
+}
+
+\newcommand{\screenshotfigure}[3]{
+    \imagefigurefull{#1}{#2}{#3}{.4}
+}
+
+\newcommand{\idkijustwanttwotofitonapagefigure}[3]{
+    \imagefigurefull{#1}{#2}{#3}{.83}
+}
+
+\newcommand{\pdflatexfigure}[4]{
+    \begin{figure}[htbp]
+    \centering
+        \importpdftex{#2}{#3}
+        \caption{#4 \label{fig:#1}}
+    \end{figure}
+}
+
+%https://www.overleaf.com/learn/latex/Code_Highlighting_with_minted
+\newcommand{\pythoncode}[3]{
+    \begin{listing}[htbp]
+    \centering
+		\inputminted[
+		frame=lines,
+		framesep=1.2mm,
+		baselinestretch=1.0,
+		bgcolor=codebg,
+		fontsize=\footnotesize,
+		linenos
+		]
+		{python}{codes/#1}
+        \caption{#3 \label{code:#2}}
+    \end{listing}
+}
+
+\makeglossaries
+\input{glossary.tex}
+\glsaddall	% add even unused acronyms
+
+\acknowledgements{\input{acknowledgements.tex}}
+\abstractEN{\input{abstract_en.tex}}
+\abstractCS{\input{abstract_cs.tex}}
+
+\input{meta.tex}
+\begin{document}
+
+\begin{introduction}
+    \input{"chapters/0-introduction.tex"}
+\end{introduction}
+
+\input{"chapters/1-understanding-data.tex"}
+\input{"chapters/1-understanding-data-quality.tex"}
+\input{"chapters/1-existing-data-quality-tools-review.tex"}
+\input{"chapters/2-data-quality-measurement-methods.tex"}
+\input{"chapters/3-experiments.tex"}
+
+\begin{conclusion}
+    \input{"chapters/5-conclusion.tex"}
+\end{conclusion}
+
+\printbibliography[]
+
+\appendix
+
+\input{"chapters/4-supplements-dq-measurement.tex"}
+
+\chapter{List of Acronyms}
+\printglossary[type=\acronymtype,style=acronyms]
+
+\input{medium.tex}
+
+\input{appendix_files_list.tex}
+
+\end{document}

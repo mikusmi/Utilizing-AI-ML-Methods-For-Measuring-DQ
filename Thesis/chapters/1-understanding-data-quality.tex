@@ -1,0 +1,139 @@
+    \section{Understanding data quality}
+    \label{sec:understanding_data_quality}
+    	
+    	Data are often far from perfect \seesection{sec:understanding_data}. Therefore, improving data quality is a way how to get data closer to perfection. Before focusing on concepts of data quality measurement \seesection{subsec:data_quality_measurement}, it is necessary to determine when data are considered to be quality \seesection{subsec:data_quality_in_theoretical_context}. Data quality is the extent to which the data meet the requirements and purpose for their use and trustworthiness \cite{McGilvray2008}\cite{Mahanti2018}.
+    		  		
+    	Another way to understand the concept of data quality measurement is to divide it into categories, understand their relationships and quality purposes. In simplicity -- accuracy, completeness, timeliness and consistency can be included among the elementary attributes of data quality. These data quality attributes, are called the data quality dimension \seesection{subsec:data_quality_dimensions_and_metrics}. Each of these dimensions describes the possible requirements coming from quality issues in the data and the metrics that try to measure and control the data quality.(e.g. Number of empty values) \cite{McGilvray2008}. Metrics can also determine the success of data quality methods.
+	    
+	    The data quality tools \seesection{sec:existing_data_quality_tools_review} commonly include a range of critical data quality methods, such as data profiling, data quality measurement and monitoring and data cleansing which present the core categorization of data quality activities \seesection{subsec:data_quality_in_theoretical_context}.
+	      
+		The following sections build on the previous section that describes the data itself \seesection{sec:understanding_data}. This section is intended to help understand data quality measurement from a general perspective.
+				
+		\subsection{Data quality in theoretical context}
+		\label{subsec:data_quality_in_theoretical_context}		
+		
+			When talking about data quality, the key starting point is to find out what is meant by the term. The term Quality Data is frequently described in the literature as "fitness for use" \cite{Elshaer2012} \cite{Ehrlinger2019} and captures the high subjectivity and contextual dependence of the term \cite{Ehrlinger2019}. Due to the subjectivity of the term data quality, there is no agreement on the definition of the term \cite{Elshaer2012}.
+			
+			 Data and information quality are often used interchangeably in data quality literature \cite{Ehrlinger2019} \cite{McGilvray2008}, although both terms can be distinguished \seesection{sec:data_in_theoretical_context}. The following definition of Information Quality applies to both data and information:
+			
+			"Information quality is the degree to which information and data can be a trusted source for any and/or all required uses. It is having the right set of correct information, at the right time, in the right place, for the right people to use to make decisions, to run the business, to serve customers, and to achieve company goals." \cite{McGilvray2008}
+			
+			From this point, we will stick to the term data quality because the work focuses on processing objectively, automatically retrievable facts. 
+			
+			In relation to the section~\ref{sec:data_in_theoretical_context}~(\nameref{sec:data_in_theoretical_context}), data quality dimensions can be categorized according to semiotic levels, such as in~Table~\ref{tab:semiotic_levels_and_dims}. 
+
+				\begin{table}[!h]
+					\caption{Semiotics levels related to DQ dimensions, adapted from \cite{Huang2018}.}\label{tab:semiotic_levels_and_dims}
+					\setlength{\extrarowheight}{8pt}
+					\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Semiotics levels} & \textbf{DQ dimensions} & \textbf{Example} \\ \hline \hline
+\multirow{2}{*}{Empirics} & Accessibility & Sequence records are easily and quickly retrievable for access.     \\ \cline{2-3} 
+                 & Timeliness    & Sequence records are sufficiently up-to-date.   \\ \hline
+Syntactics       & Accuracy      & Sequence records are correct and free of error. \\ \hline
+Semantics                 & Believability & Sequence records are regarded as credible and believable.           \\ \hline
+Pragmatics                & Completeness  & Annotated sequence records are not missing and are fully annotated. \\ \hline
+					\end{tabularx}
+				\end{table}			
+			
+			The division of dimensions according to semiotics levels is too granular, theoretical and difficult to grasp for industrial use in practice. The better technical nature of the data and customers needs are captured in the conceptual framework of data quality by Wang and Strong \cite{Wang1996}, which organizes the dimensions into four main areas - intrinsic, contextual, representation and accessibility data quality.
+			
+			\emph{Intrinsic data quality} (e.g. accuracy, objectivity, believability and reputation) is that data has quality in itself \cite{Wang1996}. \emph{Contextual data quality} (e.g. relevancy, timeliness, an appropriate amount of data, completeness) is that data quality must be considered within the context \cite{Wang1996}. \emph{Representation data qualit}y (e.g. interpretability, consistency, ease of understanding) includes aspects related to data format (concise and consistent representation) and meaning of data (interpretability and ease of understanding) \cite{Wang1996}. \emph{Accessibility data quality} means that the system must be accessible, but secure at the same time \cite{Wang1996}. In summary, this means that high-quality data should be intrinsically good, contextually appropriate for the task, clearly represented and accessible to the data consumer \cite{Wang1996}.
+	
+			The core data quality activities can be divided as follows \cite{Ehrlinger2019}:
+			
+			\begin{itemize}
+				\item \emph{Data profiling} -- the process of analyzing a dataset to collect metadata and is an essential task prior to any data quality monitoring or monitoring activity to get insight into a given dataset (e.g. the number of distinct or missing values in the column) \cite{Ehrlinger2019}.
+				\item \emph{Data quality measurement} -- the process of evaluating data quality within the dimensions of data quality (e.g. identification of root causes, necessary improvements and data corrections) \seesection{subsec:data_quality_measurement} \cite{McGilvray2008}.
+				\item \emph{Data cleansing} -- describes the process of correcting erroneous data or data issues (e.g. data standardization, de-duplication, and matching) \cite{Ehrlinger2019}.
+				\item \emph{Data quality monitoring} -- the process of ongoing measurement of data quality (the term is mainly used implicitly without an established definition and common understanding in literature) \cite{Ehrlinger2019}.
+			\end{itemize}
+			
+			Another theoretical division of data quality is outside the scope of this work. The data quality organization above should provide the reader with an insight into the data quality. Furthermore \seesection{subsec:data_quality_dimensions_and_metrics}, the dimensions will be discussed without reference to their categorization. 
+																			
+		\subsection{Data quality measurement}
+		\label{subsec:data_quality_measurement}
+		
+		 	Measuring data quality is a big challenge, as the answer to the question "How to measure/assess data quality?" is not unequivocally answered \cite{Ehrlinger2019}.
+		 	
+			Assessment is often used as a synonym for measurement, but in the data quality literature we can find the difference between these terms \cite{Ehrlinger2019}:
+			
+			"Assessment is an evaluation or estimation of the nature, ability, or quality to something and extends the concept of measurement by evaluating the measurement results and drawing a conclusion about the object of assessment." \cite{Ehrlinger2019}		 	
+		 	
+			This work uses the term measurement of data quality because one of the broader goals of the work is the automation of data quality, which seeks to achieve greater independence from the interpretation of results by the user.
+			
+		 	In this work, the term data quality measurement is also used in the context of various data quality activities that are understood as an auxiliary part of the measurement. Data profiling activity can help to gain essential insight into the data. Data quality monitoring is understood here as ongoing measurement. The work will not deal with tasks for automatic data cleaning. Methods for cleaning (e.g. de-duplication) could be used only as a basis for detecting data quality problems. The determination of the theoretical boundaries of data quality helps to design experiments for data quality \seesection{ch:experiments_and_results}.
+			
+			Data quality measurement is closely related to data quality dimensions and assigned metrics \seesection{subsec:data_quality_dimensions_and_metrics} \cite{McGilvray2008}. A partial answer to the question at the beginning of this section is to use useful data quality metrics to measure data quality. According to an article \cite{Pipino2002}, most data quality measurements are performed on an ad hoc basis to solve a specific problem, and the fundamental principles necessary to develop applicable metrics in practice are lacking. This assumption will be discussed later \seesection{sec:existing_data_quality_tools_review} on contemporary data quality tools.
+			
+			Data quality measurement (assessment) can be subjective ("soft dimensions"\cite{Ehrlinger2019} -- e.g. domain-specific business rules) or objective ("hard dimensions"\cite{Ehrlinger2019} -- e.g. accuracy, completeness, timeless or general integrity rules (a birth date
+cannot be in the future)) \cite{Pipino2002}. Subjective measurement of data quality reflects the needs and experiences of stakeholders \cite{Pipino2002}.
+			
+			Objective measurement of data quality can be task-independent or task-dependent \cite{Pipino2002}. Task-independent metrics are able to assess the state of any data without knowledge of the application context \cite{Pipino2002}. On the contrary, task-dependent metrics require application context knowledge (e.g., organization's business rules) \cite{Pipino2002}. This work focuses on the objective measurement of data quality, as it is potentially easier to automate.
+				
+			\subsubsection{Data quality dimensions and metrics}	
+			\label{subsec:data_quality_dimensions_and_metrics}
+			
+				Data quality is based on a multi-dimensional concept \cite{Ehrlinger2019}, where aspects of data quality are described by data quality dimensions for which one or more metrics can be used as quality indicators \cite{McGilvray2008}.
+				
+				Data quality science works try to define a list \cite{Pipino2002}\cite{McGilvray2008} of data quality dimensions. This list typically includes dimensions such as \emph{Accuracy}, \emph{Completeness}, \emph{Timeliness}, and \emph{Consistency} \cite{Ehrlinger2019}. The dimensions often overlap, are vaguely defined, are ambiguous and are not justified adequately in theory \cite{Shanks1998}. For these reasons, the work will only deal with the dimensions listed above and clearly defined metrics.
+				
+				It should be noted that it is often not clear how to map dimensions and metrics to a practical implementation \cite{Ehrlinger2019}.
+				
+				A metric is a function that maps a data quality dimension to a numeric value that allows the dimension fulfilment to be interpreted \cite{Ehrlinger2019}.
+				
+				Following the section dealing with aggregation levels \seesection{subsec:general_data_characteristics}, it is worth mentioning that data quality metrics can be measured at different aggregation levels (e.g. weighted arithmetic mean of the calculated metric result from the previous level)(see~Figure~\ref{fig:aggregation_levels}).
+				
+				The following sections describe the key dimensions of data quality and essential metrics for numerically interpreting a given dimension. This is not an exhaustive list of metrics, as their purpose is to give a complete picture of how metrics can be calculated. A more detailed discussion of data quality metrics is in the literature \cite{Pipino2002}\cite{Ehrlinger2019}\cite{McGilvray2008}\cite{Batini2006}. The specific metrics used in current data quality tools are analyzed in \cite{Ehrlinger2019}.		
+				
+				\subsubsection{Accuracy}
+				\label{subsec:accuracy}
+				
+					Accuracy (sometimes described as the most important data quality dimension \cite{Ehrlinger2019}) could be defined as the closeness between a value $v$ and a value $u$, considered as the correct representation of the real-life phenomenon that $v$ aims to represent and value of $u$ as its incorrect representation \cite{Batini2006}. In practice, it is essential to define rules when a data unit is considered to be an error \cite{Pipino2002}. Accuracy is related to the free-of-error rating metric, which is calculated as the number of erroneous data units divided by the total number of data units subtracted from 1 \cite{Pipino2002}\cite{Ehrlinger2019}: 
+						
+					\begin{equation}
+					\label{eqn:accuracy}
+					\var{Free-of-error}\,\var{rating} = 1 - \frac{\var{Number}\,\var{of}\,\var{data}\,\var{units}\,\var{in}\,\var{error}}{\var{Total}\,\var{number}\,\var{of}\,\var{data}\,\var{units}}
+					\end{equation} 
+			
+				This simple ratio adheres to the convention that 1 represent the most desirable and 0 the least desirable score \cite{Pipino2002}.
+													
+				\subsubsection{Completeness}
+				\label{subsec:completeness}
+				
+					Completeness can be very generically defined as "the extent to which data are of sufficient breadth, depth, and scope for the task at hand" \cite{Batini2006}. Three types of completeness are identified \cite{Batini2006}:
+					
+					\begin{enumerate}
+						\item \emph{Schema completeness} is defined as the degree to which entities and attributes are not missing from the schema \cite{Batini2006}\cite{Pipino2002}.
+						\item \emph{Column completeness} is defined as a measure of the missing values for a specific column in a table \cite{Batini2006}\cite{Pipino2002}.
+						\item \emph{Population completeness} evaluates missing values with respect to a reference population (e.g. a column should contain at least one occurrence of all 20 states, but it only contains 17 states) \cite{Batini2006}\cite{Pipino2002}.
+					\end{enumerate}					 
+					
+					Each of the tree types can be measured by taking the ratio of the number of incomplete items to the total number of items and subtracting from 1 \cite{Pipino2002}:
+					
+					\begin{equation}
+					\label{eqn:completeness}
+					\var{Completeness} = 1 - \frac{\var{Number}\,\var{of}\,\var{incomplete}\,\var{elements}}{\var{Total}\,\var{number}\,\var{of}\,\var{elements}}
+					\end{equation} 				
+				
+				\subsubsection{Timeliness}
+				\label{subsec:timeliness}
+			
+					Timeliness describes how current the data is for the task at hand \cite{Batini2006}. It is possible to have up-to-date data that is actually useless because it is too late for a specific usage \cite{Batini2006}. Timeliness is closely related to the notions of currency (update frequency of data) and volatility (how fast data becomes irrelevant) \cite{Ehrlinger2019}. Timeliness can be calculated as follows \cite{Ehrlinger2019}:	
+			
+					\begin{equation}
+					\label{eqn:timeliness}
+					\var{Q}_\var{Time}^\omega (t) \coloneqq exp(-\mathit{decline}(A) \cdot t)\text{,}
+					\end{equation} 	
+			
+where $\omega$ is the considered attribute value and $\mathit{decline}(A)$ is the decline rate, which specifies the average number of attributes that becomes outdated within the time period $t$ \cite{Ehrlinger2019}.
+
+				\subsubsection{Consistency}
+				\label{subsec:consistency}
+
+				According to Batini and Scannapieco \cite{Batini2006}, “the consistency dimension captures the violation of semantic rules defined over (a set of) data items, where items can be tuples of relational tables or records in a file” \cite{Batini2006}. Consistency can be calculated similarly to the previous dimensions \cite{Pipino2002}:
+				
+					\begin{equation}
+					\label{eqn:consistency}
+					\var{Consistency} = 1 - \frac{\var{Number}\,\var{of}\,\var{violations}\,\var{of}\,\var{a}\,\var{specific}\,\var{consistency}\,\var{type}}{\var{Total}\,\var{number}\,\var{of}\,\var{consistency}\,\var{checks}}
+					\end{equation}

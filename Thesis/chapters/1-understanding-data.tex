@@ -1,0 +1,386 @@
+\chapter{Theoretical framework}
+\label{ch:theoretical_framework}
+	
+	This chapter provides the reader with insight into key concepts of data \seesection{sec:understanding_data}, data quality with a focus on measuring data quality \seesection{sec:understanding_data_quality} and existing data quality tools \seesection{sec:existing_data_quality_tools_review}. 
+
+    \section{Understanding data}
+   	\label{sec:understanding_data}
+   	
+		One of the most fundamental terms of this work is data (singular datum). Therefore the first section will focus on elementary theory and concepts associated with the term data \seesection{sec:data_in_theoretical_context}.
+			
+		The second part examines the diversity of data \seesection{subsec:heterogeneity_in_data} by dividing the data in different ways and finding the essential data properties that can play an important role in AI methods for measuring data quality.
+
+		At the end of the work, readers are acquainted with the effects of errors in the flow of data, which have significant consequences for data quality \seesection{sec:quality_consequences_of_data_life_flow}.
+   
+    	\subsection{Data in theoretical context}
+    	\label{sec:data_in_theoretical_context}
+    	
+			Before discussing the quality of information \seesection{subsec:data_quality_in_theoretical_context}, this section introduces one of the theoretical views on data and information itself. Understanding data in a theoretical context is not trivial.  
+			
+			If we begin to explore the definition of information, we find that it may be associated with several explanations, depending on the specific area of application \cite{Zins2007}. However, Luciano Floridy proposed the General Definition of Information (GDI)\footnote{in term of data + meaning} as a part of his Philosophy of Information (see \cite{Floridi2013}). GDI provides a formal definition of information (from the semantic viewpoint) and a way in which information may be understood. 
+			
+			%The symbol $\sigma$ and the term 'infon'\footnote{'The name [infon] suggest a parallel with the fundamental particles of physics, the electrons, protons, neutrons, photons and so forth.' (Devlin (1991), p. 37)} refers to a discrete item of information in the definition.    
+     
+%	    \theoremstyle{definition}
+%		\begin{definition}{(\textit{GDI})}
+%		\label{def:gdi_definition}
+%			$\sigma$ (an infon) is an instance of information if and only if:
+%			\begin{itemize}
+%				\item (GDI.1) $\sigma$ consist of $n$ \textit{data} (d), for $n>=1$;
+%				\item (GDI.2) the data are \textit{well-formed} (wfd);
+%				\item (GDI.3) the \textit{well-formed} data are \textit{meaningful} (mwfd = $\delta$);
+%				\item (GDI.4) the $\delta$ are \textit{truthful} \cite{Floridi2013}.
+%			\end{itemize}
+%		\end{definition}
+	
+			The first requisite GDI.1 of the definition points out that semantic information\footnote{understood as semantic content (simply information)} consists of data, that can make things more complicated for a higher number of data \cite{Floridi2013}. In the second requisite GDI.2, the data are 'well-formed' -- meaning that the data are assembled according to specific rules \cite{Floridi2013}. In the requisite GDI.3, the 'well-formed' data are 'meaningful' -- meaning that the data are capable of being interpreted, translated or expressed differently and the last requisite GDI.4 requires an analysis of the nature of the true information (knowledge) \cite{Floridi2013}.	
+			
+%			According to the previous definition, information can not be dataless but can consist of a single datum ($n=1$) \cite{Floridi2013}. The datum is understood here as simply a lack of uniformity, where $Dd$~datum~$=_{def}$ $x$ being distinct from $y$, where the $x$ and the $y$ are two uninterpreted variables \cite{Floridi2013}.
+				
+%		\theoremstyle{definition}
+%		\begin{definition}{(\textit{Datum})}
+%		\label{def:datum_definition}
+%			$Dd$ datum $=_{def}$ $x$ being distinct from $y$, where the $x$ and the $y$ are two uninterpreted variables and the domain\footnote{'An information domain (e.g. theoretical physics, clock-making) is the set of information systems, resources, services and processes associated with a group of users with common concerns and a common viewpoint, and sharing a common terminology.' \cite{Bawden2012}} is left open to further interpretation \cite{Floridi2013}.
+%		\end{definition}
+		
+   			Floridi’s GDI definition provides us with a formal analysis of the information concept, with potentially direct value for information science \cite{Bawden2012}. Thought it is necessary to provide a class model (that it will be explained subsequently in the right away) to represent the relationships between data, information, knowledge, and (perhaps) wisdom to interconnect the above terms and place them in a broader context.
+					
+			The class model is known as DIK(W) pyramid (consist of components -- Data, Information, Knowledge, Wisdom) (see Figure~\ref{fig:dik_hierarchy_basic}). The main sources of the theory of the pyramid model DIKW can be found in the publications of Mortimer J. Adler\cite{Adler1986}, Milan Zeleny\cite{Zeleny1987} and Ackoff\cite{Ackoff1989}. DIKW model appears in several modifications \cite{Severini2016} \cite{Bawden2012} and representations \cite{Rowley2007}. The modifications of the model omit or add components of the pyramid. Historical versions of the model do not include the data component, current versions are omitting and reducing the role of the wisdom component, and some include additional components (semantic metadata \cite{Severini2016}). There are countless definitions of the components, so only the general meaning of these components of the pyramid model will be given \cite{Zins2007}.
+			
+			\pdflatexfigure{dik_hierarchy_basic}{bmp}{DIK-hierarchy-basic}{Semiotics levels and DIK hierarchy, adapted from Rowley and Burton-Jones \cite{Huang2018}.}
+		
+			In the context of the class model, DIKW pyramids generally start by holding data in any form (usable or not) that has no significance beyond its existence \cite{Bellinger2007}. Information is data that is processed, organized or structured to answer elementary questions (e.g., "who", "what", "where", "how many", "when") and to understand a relationship of some sort (linked elements) \cite{Bellinger2007}. At this point, the data can become useful for making decisions/actions. The knowledge (answers "how" questions) and wisdom (appreciation of "why") component of DIKW is generally agreed to be an elusive concept which is difficult to define \cite{Rowley2007}. In general, knowledge seeks to understand patterns of a set of information (organized information) and wisdom seeks to understand fundamental principles embodied within the knowledge (applied knowledge) \cite{Bellinger2007}.
+					
+			%The pyramid hierarchy implies that data is a fundamental element of information and related components from which fundamental decisions can be made in the form of knowledge, awareness, and vision. 
+			
+			Therefore, it is necessary to ensure significant maturity of the initial components of the model in order to reduce the probability of making decisions based on bad data, which can be achieved by finding appropriate automated programmable procedures in the field of computer science. Programmability decreases with a movement towards the top of the pyramid model \cite{Huang2018}. This thesis is focused on those components that can be processed by computers. The question is what programmable procedures to use to improve the initial components of the model.
+			
+			In the Figure~\ref{fig:dik_hierarchy_basic}, we can see semiotic\footnote{Semiotics is the study of signs and symbols, their interpretation and use \cite{Huang2018}.} levels that correlate to DIK (i.e. empirics with physical signs, syntactics with data, semantics with information, and pragmatics with knowledge) and specific data quality dimensions (see more in Section~\ref{subsec:data_quality_in_theoretical_context}) \cite{Huang2018}. Semiotic theory concerns the use of symbols to convey knowledge \cite{Shanks1998}. Six levels are defined for symbol analysis:
+						
+			\begin{enumerate}
+				\item \emph{Physical} and \emph{empirical} levels concern the physical media and use of the physical media for communication of symbols, 
+				\item \emph{syntactic} level concerns the structure of symbols and focuses on form rather than content,
+				\item \emph{semantic} level concerns the meaning of symbols,
+				\item \emph{pragmatic} level concerns the usage of symbols and is dependent on the task of the person using the data,
+				\item \emph{social} level concerns the purpose of information in relation to social norms and social change \cite{Shanks1998} \cite{Huang2018}.
+			\end{enumerate}					 
+			 
+			 A detailed description of semiotic levels is beyond the scope of this work. Each semiotic level then addresses specific data quality skills and data quality issues associated with them \cite{Huang2018} \seesection{subsec:data_quality_in_theoretical_context}. 
+		
+			From the perspective of computer science, data represent a real word object, in a format that can be stored, retrieved, and elaborated by a software procedure, and communicated through a network. Data is very versatile in representing real objects in the world. In addition to information generated by the processing of computer data, there are other types of information that cannot be processed by a computer or can only be approximated (e.g. fragrance, taste). We will not deal with all of these types of information. The main focus of this thesis is on computer data. Computer data are processed by a computer's CPU and is stored digitally in files and folders on the computer's hard disk in a defined format and are not spontaneously mutable\footnote{Computer data does not deteriorate over time or lose quality after being used multiple times \cite{Christensson2006}.} \cite{Christensson2006}.
+		   
+		\subsection{Heterogeneity in data}
+		\label{subsec:heterogeneity_in_data} 
+			
+			Heterogeneity is one of the major features of data and leads to several data issues. Data consists of various types (structured, semi-structured, unstructured), has different types of attributes (Qualitative and Quantitative), can be categorized differently (Dimensionality, Sparsity and Resolution), even by dataset characteristics (Record data, Graph data, Ordered data), and is stored in different diversions (Relational databases, Key-Value Stores or Column-Family Stores). Data heterogeneity can have a significant impact on data quality, as there are more options for how and where data can lose quality.
+														
+			\subsubsection{Data areas}
+			\label{sub:data_areas}			
+						
+				This section discusses the most common data areas to give the reader an insight into the current data technologies. Each of the data areas tries to investigate data problems that the data domain solves. There are countless of these areas, therefore only the most common areas will be discussed. Data areas may partially overlap. Some of the following areas will be mentioned without further description, as their extensive description is beyond the scope of this work. 
+				
+				\textit{Web data} is huge, widely-distributed, diverse, heterogeneous, semi-structured \seesection{subsec:types_of_data}, linked (such as Linked data), redundant and dynamic information repository \cite{Aggarwal2015}. Web data consist of web content (e.g. text, images, records), web structure (e.g. hyperlinks or tags) and web usage (e.g. HTTP logs or app server logs) \cite{Aggarwal2015}. The discipline of obtaining information from web data is called Web mining (includes Web Content Mining, Web Structure Mining and Web Usage Mining) \cite{Aggarwal2015}.
+				
+				\textit{Open data} is data that is freely available to anyone in terms of its use, re-use, redistribution and rights to republish without restrictions from mechanisms of control (copyright, patents or other) \cite{Foundation2019}. Open data should be primary data \seesection{subsec:data_categories}, published in a timely manner and everyone must be able to use, re-use and redistribute them -- there should be no discrimination against fields of endeavour or against persons or groups \cite{Foundation2019}. For the data to be truly open, the following aspects should follow:
+				\begin{itemize}
+					\item data must be complete,
+					\item data must be primary,
+					\item data must be timely,
+					\item data must be accessible,
+					\item data must be machine processable and made online in persistent archives,
+					\item access must be non-discriminatory,
+					\item data formats must be non-proprietary,
+					\item data license must be unrestricted and bear no usage costs,
+					\item also data should be as accurate as possible \cite{Charalabidis2018}.
+				\end{itemize}
+				
+				Tim Berners-Lee designed a five-star rating scheme for open data according to the following criteria \cite{Heath2011}\cite{Hausenblas2012}:
+			
+			\begin{itemize}
+				\item 1 Star: data is available on the Web (whatever format), but with an open license.
+				\item 2 Stars: data is available as machine-readable structured data (e.g., Microsoft Excel instead of a scanned image of a table).
+				\item 3 Stars: data is available as (2) but in a non-proprietary format (e.g., CSV instead of Excel).
+				\item 4 Stars: data is available according to all the above, plus the use of open standards from the W3C (RDF and SPARQL) to identify things, so that people can link to it.
+				\item 5 Stars: data satisfies all the above-mentioned points, including outgoing links to other people's data to provide context (LOD\footnote{Linked Open Data}).
+			\end{itemize}	
+						
+				\textit{Linked data} is a method for publishing structured interlinked data on the Web, building up on URIs, HTTP and RDF technologies \cite{Heath2011}. The paragraphs dealing with linked data are drawn from the following source \cite{Heath2011}, unless otherwise stated. 
+				
+				These data are structured data in a machine-readable format that can be semantically queried. A standard mechanism for specifying the existence and meaning of connections between items described in this data is provided by the Resource Description Framework (RDF) that give us a way to describe real-world objects (people, locations, or abstract concepts) and their relationships with each other. Data enriched in this way is significantly more discoverable, and therefore more usable. The difference between a Classical Web and Semantic Web is that the Semantic Web connects objects and not just documents by saying what type of relationship it is (e.g. is-friend-of).
+				
+				Linked data can link items between different data sources, therefore connect these sources into a single global data space via Web standards (URIs, HTTP, HTML) and a common data model (the Web of Data). The Web of Data (also referred to as Semantic Web) spans numerous topical domains, such as people, companies, and books, as well as an increasing volume of scientific and government data. Thus, the main goal is to share structured data \seesection{subsec:types_of_data} on a global scale. Linked data is not only intended for the public Web domain but can be applied to any data that can be linked by the described principle (e.g. private or personal).
+				
+				Tim Berners-Lee put the linked data in the context of the following principles \cite{Heath2011}:
+				
+				\begin{enumerate}
+					\item Use URIs as names for things.
+					\item Use HTTP URIs, so that people can look up those names (interpreted, "dereferenced").
+					\item When someone looks up a URI, provide useful information, using the standards (RDF, SPARQL (query language is widely used for querying RDF data)).
+					\item Include links to other URIs, so that they can discover more objects. 
+				\end{enumerate}
+				
+				With this approach, searching in data is more effective because of the interconnectedness of datasets coming from different and heterogeneous data sources. One way to avoid heterogeneity is by advocating the reuse of terms from widely deployed vocabularies for describing common objects (e.g. people, companies, books). Therefore, when working with data for which an ontological dictionary already exists, it should be used (such as for Invoice, Airline or IoT)\footnote{http://ontologydesignpatterns.org/}. Another way is to make data self-descriptive as much as possible. Self-descriptive means that an application based on Linked data that discovers some data on the Web that is represented by a previously unknown dictionary should be able to find all the meta-information needed to translate the data into a representation that it understands and can process. Technically, every vocabulary term (such as RDFS, OWL, see following paragraph) links to its own definition and mapping between terms from different vocabularies in the form of RDF links should be published. These techniques lead to the discovery of meta-information for data integration.
+			
+				"RDF provides a generic, abstract data model for describing resources using subject, predicate, object triples. However, it does not provide any domain-specific terms for describing classes of things in the world and how they relate to each other. This function is served by taxonomies, vocabularies and ontologies expressed in SKOS (Simple Knowledge Organization System), RDFS (the RDF Vocabulary Description Language, also known as RDF Schema) and OWL (the Web Ontology Language)." \cite{Heath2011} A full discussion of RDF, SKOS, RDFS and OWL are beyond the scope of this thesis.
+			
+%				\todo[inline]{Try to find better image!}
+%				\imagefigurelarge{data_areas}{png/Data_areas.png}{Overview of the field of open data \cite{Charalabidis2018}.}
+				%\imagefigurelarge{png/5-star-steps.png}{A five-star rating scheme for open data \cite{Hausenblas2012}.}			
+																		
+				\textit{Government data} (e.g. economic statistics, land ownership, voting records of elected representatives and similar) is produced or commissioned by the government. Open government data relate to creating transparency, accountability and promoting democratic values \cite{Charalabidis2018}.
+				
+				\textit{Big data} is commonly described as more massive (no longer fits into the memory of a single machine) and complex datasets (structure, semi-structured, unstructured data) (see following~Section~\ref{subsec:types_of_data}) that require more sophisticated processing technologies (such as parallel and distributed computing framework Google’s MapReduce, Hadoop and Apache Spark), streaming technologies (such as Apache Spark Streaming, Apache Storm, Apache Flink or Apache Samza) and storage technology (e.g. column-oriented databases stores)\seesection{subsec:diversity_of_data_stores} than traditional approaches that were common before Big data era \cite{Charalabidis2018} \cite{Baldassarre2016}.	Big Data is often explained and characterised using the 4V -- volume, velocity, variety and veracity  \cite{Charalabidis2018}.
+					
+				\emph{Machine data} includes data from areas as varied as IoT data or industrial systems sensor data, application programming interfaces (APIs), message queues, change events, cloud applications and other similar activities that are recorded. These are activities of machines, devices, customers, users, applications, servers, networks and similar in real-time. These activities create plenty of machine data in an array of unpredictable formats that are often ignored \cite{Bridgwater2018}. It is also often real-time or stream data. Machine data can help organizations troubleshoot problems, identify threats, and use machine learning to predict future issues \cite{Bridgwater2018}. Machine data are closely related to operational data (IT systems data such as application logs, metrics, event data and microservices applications)\cite{Bridgwater2018}.	
+						
+				The following areas will be mentioned without further description -- \textit{biological data} (such as genomics data that analyse DNA \cite{Bridgwater2018}, see Section~\ref{subsec:general_characteristics_of_data_sets}) about \nameref{subsec:general_characteristics_of_data_sets}, \textit{multimedia data} (see Figure~\ref{fig:data_sources}) or \textit{social network data} (study of human relationships by means of graph theory \cite{Aggarwal2015} -- see Section~\ref{subsec:general_characteristics_of_data_sets} about \nameref{subsec:general_characteristics_of_data_sets}).
+							
+			\subsubsection{Types of data}
+			\label{subsec:types_of_data}
+			
+				All data has structure of some sort and we have to count with a wide range of possible representations. Data involves storing structured, semi-structured, and unstructured multimedia data (see Figure~\ref{fig:data_sources}). Most often we can encounter three types of data \cite{Batini2006}:								
+								
+				\imagefigurelarge{data_sources}{png/Data_sources.png}{Variety of data sources \cite{AndreasMeier2019}.}									
+									
+				\textit{Structured data}, when each data element is bound to a rigid data structure (Schema, Data types) \cite{Batini2006} \cite{AndreasMeier2019}. Among the most well-known representatives of structured data is the relational table (such as relational databases). Thus, relational databases (without NoSQL/post-relational extensions) mostly process structured and formatted data \cite{AndreasMeier2019}.
+				
+				\textit{Semi-structured data} (such as Twitter feeds, Facebook and YouTube postings), when data has a structure which has some degree of flexibility \cite{Batini2006} with emphasis on human-readable aspect. Thus, data does not obey the fixed structure (schemaless) but contains tags or other markers used to identify certain elements within the data. The best-known formats include XML, JSON and HTML (in general web-related formats). This type of self-describing data is important in situations where the data collection is potentially valuable, but we cannot store it in a structured way, or we do not yet know its exact use.
+				
+				\textit{Unstructured data}, when data has no specific structure \cite{Batini2006} and is very difficult or almost impossible for a computer to understand because of irregularities and ambiguities, such as text-heavy documents (such as books and journals -- in general natural language) that can contain important unstructured facts. Unstructured data includes forms of images, videos and audio as well. Unstructured data became increasingly important only when storing it in larger amounts became financially viable for companies. Subsequently, new technologies such as the NoSQL databases have developed around unstructured and semi-structured data.
+				
+				Most NoSQL systems \seesection{subsec:diversity_of_data_stores} do not have an explicit database schema, since changes can happen at any time in the semistructured or unstructured data \cite{AndreasMeier2019}.	
+													
+			\subsubsection{Data attribute types}
+			\label{subsec:data_attribute_types}
+										
+				\pdflatexfigure{data_attributes_types}{svg}{data_attributes_types}{Data attributes types.}
+						
+				Generally, rows (instances, objects) in a dataset are characterized by the values of features, or attributes, that measures different aspects of the row \cite{Orlando2015}. Attributes can be divided into two basic qualitative and quantitative groups (see Figure~\ref{fig:data_attributes_types}). A useful and simple way to specify the type of an attribute is to identify the properties of numbers that correspond to underlying properties of the attribute \cite{Tan2013}. The following properties (operations) of numbers are typically used to describe attributes:
+				
+				\begin{enumerate}
+					\item \textit{Distinctness} $=$ and $\neq$,
+					\item \textit{Order} $<$, $\leq$, $>$, and $\geq$,
+					\item \textit{Addition} $+$ and $-$,
+					\item \textit{Multiplication} $\ast$ and $/$ \cite{Tan2013}.
+				\end{enumerate}
+				
+				Qualitative attribute refers to a value that cannot be expressed as a number, but we can group information according to their values. This group includes nominal, ordinal and binomial attributes that have a finite set of possibilities. Nominal attribute (e.g. race, eye color) values cannot be sorted or measured, and are used as labels or names. Ordinal attributes (e.g. performance) are the ones that can rank order of categories but cannot measure the distance between them \cite{Batini2006}. A binomial attribute (e.g. a basic gender division) has allowed only two labels (disjunct sets) \cite{Batini2006}. The binomial attributes are divided according to whether their values are equally important. For example, gender attribute values have the same weight symmetrically, but test results (e.g. pass/fail) are of different importance. The above mentioned attributes are classified into a group of categorical attributes.
+				
+				Quantitative attribute refers to a value that can be expressed as a number or can be quantified \cite{Batini2006}. This group includes discrete and continuous attributes. Discrete attribute (e.g. school grades, defects per hour) is countably infinite and continuous attribute (e.g. length measurements) is uncountably infinite \cite{Orlando2015}\cite{Batini2006}. Numerical attribute (discrete or continuous) can be interval-scaled or ration-scaled \cite{Orlando2015}. Interval attributes (e.g. temperatures in Celsius or Fahrenheit, calendar dates) have values that are not only ordered but also measured in fixed and equal units, and no natural starting point (e.g. zero) is specified – it is completely arbitrary \cite{Batini2006}. Ratio attributes (e.g. length, temperature in Kelvin) compared to interval attributes are ones for which the measurement method inherently defines a zero point \cite{Batini2006}.					
+								
+				The Table~\ref{tab:different_attribute_types} gives the descriptions of the main attribute types along with information about the statistical operations that are valid for each type and Table~\ref{tab:transformations_that_define_attribute_levels} explains their permissible (meaning-preserving) transformation (e.g. the meaning of a length attribute is unchanged if it is measured in meters instead of feet) \cite{Tan2013}.
+				
+				"The statistical operations that make sense for a particular type of attribute are those that will yield the same results when the attribute is transformed using a transformation that preserves the attribute's meaning. To illustrate, the average length of a set of objects is different when measured in meters rather than in feet, but both averages represent the same length." \cite{Tan2013}			
+				
+				\begin{table}[!h]
+					\caption{Different attribute types \cite{Tan2013}.}\label{tab:different_attribute_types}
+					\setlength{\extrarowheight}{8pt}
+					\begin{tabularx}{\textwidth}{|c|c||X|X|X|}
+\hline
+\multicolumn{2}{|c|}{Attribute Type} & \multicolumn{1}{c|}{\textbf{Description}} & \multicolumn{1}{c|}{\textbf{Examples}}  & \multicolumn{1}{c|}{\textbf{Operations}}                                                                                                   \\ \hline \hline
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\makecell{\textbf{Categorical} \\ (Qualitative)}}} & \rotatebox[origin=c]{90}{\hspace{0.1cm}\textit{Nominal}}  & The values of a nominal attribute are just different names; i.e., nominal values provide only enough information to distinguish one object from another. $(=, \neq)$ & zip codes,
+employee ID numbers, eye color, gender & mode, entropy, contingency correlation,
+$\chi^{2}$ test \\ \cline{2-5} 
+                                                    & \rotatebox[origin=c]{90}{\textit{Ordinal}}  & The values of an ordinal attribute provide enough information to order objects. $(<,>)$ & hardness~of~minerals, ${\{good, better,}$ $best\}$ , grades, street numbers & median, percentiles, rank correlation, run tests, sign tests \\ \hline
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\makecell{\textbf{Numeric} \\ (Quantitative)}}}    & \rotatebox[origin=c]{90}{\textit{Interval}} & For interval attributes, the differences between values are meaningful, i.e., a unit of measurement exists. $(+, -)$ & calendar dates, temperature in Celsius or Fahrenheit & mean, standard deviation Pearson's correlation, $t$ and $F$ tests \\ \cline{2-5} 
+& \rotatebox[origin=c]{90}{\hspace{0.1cm}\textit{Ratio}}    & For ratio variables, both differences and ratios are meaningful.  $(\ast, /)$ & temperature in Kelvin, monetary quantities, counts, age, mass, length, electrical current & geometric mean, harmonic mean, percent variation \\ \hline
+					\end{tabularx}
+				\end{table}	
+				
+				\begin{table}[!h]
+					\caption{Transformations that define attribute levels \cite{Tan2013}.}\label{tab:transformations_that_define_attribute_levels}
+					\setlength{\extrarowheight}{8pt}
+					\begin{tabularx}{\textwidth}{|c|c||X|X|}
+\hline
+\multicolumn{2}{|c|}{Attribute Type}                                    & \multicolumn{1}{c|}{\textbf{Transformation}}                                                             & \multicolumn{1}{c|}{\textbf{Comment}}                                                                                                   \\ \hline \hline
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\makecell{\textbf{Categorical} \\ (Qualitative)}}} & \rotatebox[origin=c]{90}{\hspace{0.1cm}\textit{Nominal}}  & Any one-to-one mapping, e.g., a permutation of values                                                    & If all employee ID numbers are reassigned, it will not make any difference.                                                             \\ \cline{2-4} 
+                                                    & \rotatebox[origin=c]{90}{\textit{Ordinal}}  & An order-preserving change of values, i.e., ${new\_value = f(old\_value)}$, where $f$ is a monotonic function. & An attribute encompassing the notion of good, better, best can be represented equally well by  the values ${\{1,2,3\}}$ or by ${\{0.5,1,10\}}$. \\ \hline
+\multirow{2}{*}{\rotatebox[origin=c]{90}{\makecell{\textbf{Numeric} \\ (Quantitative)}}}    & \rotatebox[origin=c]{90}{\textit{Interval}} & ${new\_value =}$ ${a * old\_value + b}$, $a$ and $b$ constants.                                                      & The Fahrenheit and Celsius temperature scales differ in the location of their zero value and  the size of a degree (unit).              \\ \cline{2-4} 
+                                                    & \rotatebox[origin=c]{90}{\hspace{0.1cm}\textit{Ratio}}    & ${new\_value = a * old\_value}$                                                                              & Length can be measured in meters or feet.                                                                                               \\ \hline
+					\end{tabularx}
+				\end{table}				
+	
+				%\imagefigurelarge{different_attribute_types}{png/Different_attribute_types.png}{Different attribute types \cite{Tan2013}.}	
+				
+				%\imagefigurelarge{transformations_that_define_attribute_levels}{png/Transformations_that_define_attribute_levels.png}{Transformations that define attribute levels \cite{Tan2013}.}	
+				
+				The properties and operations of the attribute types are cumulative \cite{Tan2013} (see detail description below). It means that any property or operation that is valid for nominal, ordinal, and interval attributes is also valid for ratio attributes\footnote{However, this does not mean that the operations appropriate for one attribute type are appropriate for the attribute types above it \cite{Tan2013}.} \cite{Tan2013}. Specifically:
+				
+				\begin{enumerate}
+					\item Nominal adheres to \textit{Distinctness};
+					\item Ordinal adheres to \textit{Distinctness} and \textit{Order};
+					\item Interval adheres to \textit{Distinctness}, \textit{Order} and \textit{Addition};
+					\item Ratio adheres to \textit{Distinctness}, \textit{Order},  \textit{Addition} and \textit{Multiplication} \cite{Tan2013}.
+				\end{enumerate}						
+						
+%				\todo[inline]{Small conclusion - What problems does this bring?}
+						
+			\subsubsection{General data characteristics}
+			\label{subsec:general_data_characteristics}		
+				\vspace*{0.3cm}
+				Before providing types of datasets, three general data characteristics will describe the data -- Dimensionality, Sparsity and Resolution.
+				
+				The \emph{dimensionality} of data (datasets) is the number of features (attributes) that the objects in the data possess \cite{Tan2013}. Data with different levels of dimensionality tend to be qualitatively different. High-dimensional data suffers from the curse of dimensionality -- the volume of the feature space increases so that the available data becomes sparse \cite{Tan2013}. The curse of dimensionality is a problem for some classification and clustering tasks that are based on the density and distance between data points \cite{Tan2013}.
+				
+				\emph{Sparse data} may be cases where, for example, most (asymmetric) attributes have zero value or a value is missing, and low percentages values are non-zero \cite{Tan2013}. 
+				
+				Different levels of \emph{resolution} (e.g. scales in hours, months, or years) reveal different patterns and some patterns lose quality \cite{Tan2013}. If the resolution is too fine, a pattern may be buried in noise \cite{Tan2013}. In the case of too coarse resolution, the pattern may disappear \cite{Tan2013}.	
+				
+				Following the resolution of the data, which provides a different view of the data depending on the chosen strategy, we will seamlessly follow \emph{aggregation levels} of the data, which can be viewed similarly.
+
+				The aggregation levels can be divided into value-level, attribute-level, record-level, table-level, DB-level (see~Figure~\ref{fig:aggregation_levels}). From a theoretical point of view, it would be appropriate to extend this list to a higher level, which captures aggregation at the level of multiple databases of one system (system-level) or even at the level of publicly available third-party resources (internet-level). It should be noted that in this context, the aggregation levels are limited to structured data (e.g. tables). Aggregation levels will help us during data quality metrics examination \seesection{subsec:data_quality_dimensions_and_metrics} as well.
+
+			\imagefigurelarge{aggregation_levels}{pdf/Aggregation_levels.pdf}{Illustration of the aggregation levels. From the left side -- value-level, attribute-level, record-level, table-level and DB-level.}
+			
+%			\todo[inline]{Small conclusion - What problems does this bring?}			
+			
+			\subsubsection{General characteristics of datasets}
+			\label{subsec:general_characteristics_of_data_sets}
+			
+				Basic knowledge of data can be obtained from the dataset type \cite{Tan2013}. There are several main variants of datasets that will be presented in this section. One possible grouping of dataset types is as follows:			
+			
+			    \begin{enumerate}
+    				\item \textbf{Record data} (flat files, relational databases \seesection{subsec:diversity_of_data_stores} consists of a collection of records, each of which consists of a fixed set of attributes \cite{Tan2013}.
+    				\begin{enumerate}
+    					\item \textit{Transaction data} consists of transactions where each transaction involves a set of items (e.g. sales orders, invoices, travel records) \cite{Tan2013}. 
+    					\item \textit{Data matrix} has data objects (vectors) in its collection that have a fixed set of numerical attributes (see numerical attribute in Section~\ref{subsec:data_attribute_types}) that represent dimensions of multidimensional space \cite{Tan2013}.
+    					\item \textit{Document data} is represented by a term vector, where each term is a component (attribute) of the vector and the value of each component is the number of times the corresponding term occurs (ignoring order) in the document \cite{Tan2013}.
+    				\end{enumerate}
+    				\item \textbf{Graph data} (see Graph-Based Stores in Section~\ref{subsec:diversity_of_data_stores}) captures relationships among data objects, and the data objects themselves are represented as graphs \cite{Tan2013}.
+    				\begin{enumerate}
+    					\item \textit{Data with relationships among objects} (World Wide Web data) are objects that are mapped to nodes of the graph, while the relationships among objects are captured by the links between objects (e.g. Linked data) and link properties, such as direction and weight \cite{Tan2013}. The relationships among objects frequently convey important information (e.g. PageRank) \cite{Tan2013}.
+    					\item \textit{Data with objects that are graphs} (Molecular structure data) where objects are structured from interconnected subobjects, then such objects are often represented as graphs \cite{Tan2013}.
+    				\end{enumerate}
+    				\item \textbf{Ordered data} \seesection{subsec:data_attribute_types} has attributes that involve order in time or space \cite{Tan2013}.
+    				\begin{enumerate}
+    					\item \textit{Sequential data} (also known as \textit{Temporal data}) can be thought of as an extension of record data, where each record attribute can be associated with time (e.g. purchase history of a customer) \cite{Tan2013}. Predictive tasks can be performed on sequential data \cite{Tan2013}.
+    					\item \textit{Sequence data} (e.g. genetic information) consists of a dataset that is an ordered sequence of individual entities, such as a sequence of words or letters \cite{Tan2013}. Unlike sequential data, sequence data do not have timestamps \cite{Tan2013}.
+    					\item \textit{Time series data} (e.g. heights of ocean tides) is a special type of sequential data where each record is a time series (i.e. a series of measurements taken over time) \cite{Tan2013}. An important aspect of time data is the (temporal autocorrelation) similarity of time-related objects in some of their attributes \cite{Tan2013}.
+    					\item \textit{Spatial data} (e.g. cross-globe weather data, medical imaging) have some spatial attributes such as positions or areas \cite{Tan2013}. An important aspect of spatial data is (spatial autocorrelation) similarity in physically close objects in some of their attributes \cite{Tan2013}.
+    				\end{enumerate}
+				\end{enumerate} 
+				
+				In data processing, appropriate attention has to be given to the structure of datasets. One of the processes that focuses on data (record data) structuring is called data tidying. This process creates tidy data. Tidy data\footnote{Messy data is any other arrangement of the data \cite{Wickham2014}.} have a structure that makes data effortless to analyse and use:
+								 			
+				\begin{enumerate}
+					\item each variable forms a column,
+					\item each observation forms a row,
+					\item each type of observational unit forms a table \cite{Wickham2014}.
+				\end{enumerate}				
+				
+				The principles of tidy data are closely tied to those of relational databases and Codd's relational algebra, but with the constraints framed in a language often used by statisticians \cite{Wickham2014}. Tidy data is focus on a single dataset rather than connected datasets (such in relational databases) \cite{Wickham2014}.
+													
+				Tidy data (also applies to Record data) can be met in two formats\footnote{https://kiwidamien.github.io/what-is-tidy-data.html} - long (also known as narrow) and wide. The wide format has a single row to describe each element via multiple columns. On the other hand, the long format has multiple rows to describe a single element, where each row holds particular information about the element. The suitability of a given format is chosen according to the type of data analysis. Sometimes it is necessary to convert between these formats, for example, when some data analysis functions require the long format (such as \texttt{ggplot2::ggplot()} in R language)\footnote{https://www.datacamp.com/community/tutorials/long-wide-data-R}. 	
+					
+%				\todo[inline]{Small conclusion - What problems does this bring?}	
+												
+    		\subsubsection{Diversity of data stores}
+    		\label{subsec:diversity_of_data_stores}
+    		 		
+				
+				An essential part of any technical solution is choosing where to store data. This section will provide an overview of the most important data sources, except relation stores. The relation stores (MySQL, Postgres, Microsoft SQL Server, Oracle Database) only use tables to store and handle data. Relational stores (with transactions at the highest isolation level)\cite{AndreasMeier2019} are based on ACID (Atomicity, Consistency, Isolation, Durability) consistency model. However, striving for full consistency is not always desirable \cite{AndreasMeier2019}. For example, web-based applications mostly require high availability and the ability to continue working if a computer node or a network connection fails \cite{AndreasMeier2019}. This has led to such network partition tolerant systems that use replicated computer nodes and a softer consistency requirement called BASE (basically available, soft state, eventually consistent) \cite{AndreasMeier2019}. This technological solution is also related to CAP theorem, which states that in any massively distributed data management system, only two of the three properties consistency, availability, and partition tolerance can be ensured \cite{AndreasMeier2019}. According to the CAP theorem,  for NoSQL database systems consistency may be fulfilled with a delay to prioritize high availability and partition tolerance \cite{AndreasMeier2019}. NoSQL technologies are described in the following paragraphs.
+											
+				\textit{Key-Value Stores} (e.g. Azure Table, Aerospike, Redis, Riak) is the most simple NoSQL database type (works as a simple hash table) where data are stored as key-value pairs, and the simplest model is easily scalable \cite{AndreasMeier2019}. Key-Value systems treat data as a single opaque collection, which may have different fields for every record -- a data object as a value for another data object as a key \cite{AndreasMeier2019}. Suitable use cases are, for instance, session data, user profiles, user preferences and shopping carts.
+				
+				\textit{Column-Family Stores} (also known as Wide column stores or Column-oriented) (e.g. Google Bigtable, CreateDB, Apache HBase, Cassandra) enhance the key-value concept accordingly by providing additional structure (groups of columns that are often read together). Data objects are addressed with row keys (collection of not necessarily the same columns), and object properties are addressed with column keys (Name-value pair) \cite{AndreasMeier2019}. Columns in a table are grouped into column families, where data are of the same type, since it is assumed it will be read together \cite{AndreasMeier2019}. The data objects are versioned with a timestamp \cite{AndreasMeier2019}. The column-family stores provide high scalability and availability due to key-value pairs, just as with key-value stores \cite{AndreasMeier2019}. Suitable use cases are, for instance, event logging and content management systems.
+				
+				\textit{Document-Oriented Stores} (e.g. MongoDB, CouchBase, Microsoft Azure Cosmos DB, Amazon DynamoDB) are called document-oriented systems that store, retrieve and manage document-oriented information, also known as semi-structured data \seesection{subsec:types_of_data}  \cite{AndreasMeier2019}. Documents organized into collections (usually of a similar structure) are identified by a unique key where the value part is a document (XML, YAML, JSON, BSON) \cite{AndreasMeier2019}. Suitable use cases are, for instance, event logging, content management systems, blogs, web analytics and e-commerce applications.
+				
+				\textit{Graph-Based Stores} (e.g. Neo4j, Amazon Neptune, Apache Hama) are similar to document-oriented stores, but they are enhanced with a layer of relations, which allows them to link documents for rapid graph traversal \cite{AndreasMeier2019}. In graph data stores, data is stored as nodes and edges, respectively, and follow structuring schema belonging to the graph \seesection{subsec:general_characteristics_of_data_sets}. Nodes and relationships contain data in the form of key-value pairs \cite{AndreasMeier2019}. A suitable use case is for graph structures such as social networks and recommendation engines.
+				
+				Individual data sources use different types of data formats, according to the requirements of the database system. Unfortunately, no uniform format fulfills all the requirements of data sources, so we must consider heterogeneity in data formats. Some formats are Comma Separated Values (CSV), Tab Separated Value (TSV), Extensible Markup Language (XML), and JavaScript Object Notation (JSON). Some modern data formats also exist for large data storage that are supported by Big Data Frameworks (Hadoop, Apache Spark). These formats include Avro, Parquet, and Apache ORC (Optimized Row Compressed). A list of other formats and possibly their description is beyond the scope of this work. 	
+					
+				These different models, technologies, and related formats can be, to some extent, handled by data warehousing systems. A data warehouse system gathers heterogeneous data from several sources (e.g. relational/nonrelational databases, CSV, XML) \cite{Homayouni2019}. It integrates them into a single data store to perform faster analysis and make better decisions via business tools (Business Intelligence, Business Analytic). The main component of the data warehouse are ETL/ELT (extract, transform and load) processes that selects data from the heterogeneous sources, resolves problems in the data, converts it into a common model appropriate for research and analysis, and writes it to the target data warehouse \cite{Homayouni2019}. The disadvantage of data warehousing over traditional software systems is the difficulty of testing due to heterogeneous sources and voluminous data \cite{Homayouni2019}.					
+			
+				A data warehouse is a repository of structured, processed and filtered data for a known schema and purpose \cite{Homayouni2019}. On the other hand, there is a repository focused on a vast amount of raw data (irrespective of the source and its structure \cite{Kumar2020}) whose purpose does not have to be defined \cite{Pearlman2019}.  This data is only transformed when it is ready to be used \cite{Pearlman2019}. Such storage is called a Data lake. Data lake is a good choice for those who want in-depth analysis (e.g. data scientists) whereas Data warehouse is ideal for operational users (e.g. business professionals) \cite{Pearlman2019}.
+			
+%			\begin{table}\centering
+%				\caption{DBs vs Workloads}\label{tab:dbs_workloads}
+%				\begin{tabular}{|c||r|r|}
+%					\hline DB/Workload & \textbf{Analytical} & \textbf{Operational} \\\hline \hline
+%					\textbf{Ralational} & Data warehouse & Database \\\hline
+%					\textbf{Non-relational} & Data lake & NoSQL \\\hline
+%				\end{tabular}
+%			\end{table}		
+
+				Some companies try to achieve transactional and analytical workloads on data by combining separate technologies (standalone databases, data warehouses or data lakes), which has long been considered good practice to prevent analytical workloads from disrupting operational processing \cite{SAP2018}. In such scenarios, data must be moved (ETL, ELT) from Transaction Systems (OLTP) to Operational Systems to Analysis Systems (OLAP), slowing down processing and significantly impeding integration and the ability to gain real-time insight and analytics \cite{SAP2018}. In cases where it is necessary to have real-time information from the data (e.g. the emergence of streaming data from sensors, immediate personalized recommendations when placing goods in the shopping cart), this scenario (complex architecture) is insufficient or at least restrictive \cite{SAP2018}.
+				
+				Companies responded to this shortcoming by introducing new technology and database implementations (such as SAP HANA, VoltDB, Aerospike, MemSQL, Apache Kudu), due to SSD and RAM memory cost reductions \cite{Kerremans2018} -- translytical database (or also HTAP) \cite{Kerremans2018}\cite{SAP2018}. The general idea of a translytical database (a combination of words "transaction" and "analytics” \cite{SAP2018}) is to have a single unified technology layer that provides the basis for both application transactions and analytics in real-time without sacrificing transactional integrity, performance, and scale \cite{Kerner2019}. Copying data from operational databases to data warehouses and data marts for analytical processing not only duplicates the data, but every complex ETL process might introduce data quality problems which leads to inconsistencies in the reporting \cite{Kerremans2018}.
+				
+%				\todo[inline]{Small conclusion - What problems does this bring?}				
+					    		    				  	
+			\subsubsection{Data categories}
+			\label{subsec:data_categories}
+											
+				Data categories are groupings of data with common characteristics of features. It is useful to know the different categories of data and their relationships and dependencies, because data for each category should be treated differently, even in the case of data quality. Floridi's \cite{Floridi1999} first more theoretical categorization of data includes four types of data:
+
+				\begin{itemize}
+					\item Primary data -- As the name implies,  these are the principal data (e.g. a simple array of numbers, or the contents of books in a library) stored in a database store, which is generally designed to be primarily conveyed to the user \cite{Floridi1999}.
+					\item Metadata -- These are secondary indications (e.g. location, format, updating, availability, copyright restrictions) about the nature of the primary data \cite{Floridi1999}.
+					\item Operational data -- These are related to the operation, use, performance of the data source \cite{Floridi1999}.
+					\item Derivative data -- These are data that can be extracted from the above data types \cite{Floridi1999}.
+				\end{itemize}
+				
+				There are no strict boundaries between the different data types above, as it depends on how they are used.	
+
+				In this section, the more technical categorization of data will be discussed (see~Figure~\ref{fig:data_categories}). In this technical case, data can be classified into the following five categories:
+							
+				\pdflatexfigure{data_categories}{svg}{Data_categories}{Data and Metadata categories -- inspired by sources \cite{McGilvray2008}\cite{Mahanti2018}.}
+				
+				\begin{itemize}
+					\item \textit{Master data} -- Master data are highly valuable key data that describe the principal entities of a given domain that play a crucial role in transactions on that domain \cite{Mahanti2018}. Master data are usually recognized by nouns \cite{McGilvray2008} (e.g. customers, accounts, vehicles, patients, products). It is essential to ensure consistency (e.g. synchronization of their properties) because master data tend to be used by multiple systems \cite{Mahanti2018}\cite{McGilvray2008}. Generally, master data are created once, used multiple times, and occasionally changed \cite{Mahanti2018}. Master data are grouped into master records, which may include associated reference data \cite{McGilvray2008}. For example, reference data may be a country record (e.g., Czech Republic, Slovakia) field within an address in a customer master record. Errors in master data can have significant cost implications \cite{Mahanti2018}. Such an error could be a wrong address of the customer, causing correspondence, bills or shipments to be sent to the wrong address. Already from this example, it is clear that errors on master data can have significant business impacts (e.g. financial loss or loss of credibility).
+					\item \textit{Reference data} -- Reference data, as the name implies, are designed to be referenced by other data, such as master data or transactional data, and to provide standard terminology and structure across the organization's systems \cite{Mahanti2018}\cite{McGilvray2008}. For example, reference data could be valid value lists, state abbreviations, gender, product types, ZIP codes or HTTP status codes. Standardized reference data are essential for data interoperability and data integration \cite{McGilvray2008}. There are standardization groups (e.g. ISO, CEN) \cite{McGilvray2008} providing, mandating and maintaining reference standards (e.g. ISO 3166-1 with the standard of currency and country codes)\footnote{https://www.iso.org/standard/63545.html} to reduce failures caused by inconsistency across organizations. These are also internal reference lists within the organization (e.g. customer and account status codes), to ensure consistency across the organization by standardizing these reference data \cite{Mahanti2018}. Changes in the reference data should be rather rare \cite{Mahanti2018} and thoughtful (such as adding or changing an item name in the reference list). Creating a new master data element sometimes implies the creation or maintaining of reference data \cite{Mahanti2018} (e.g. adding new headphones with a new Bluetooth version to an e-commerce system and extending a reference list with Bluetooth versions).
+					\item \textit{Transactional data} -- Transaction data describe events at a certain point in time within a domain and represents the largest volume of data in the enterprise \cite{Mahanti2018}\cite{McGilvray2008}. In simplicity, there are data from transaction events. Transaction data describes relevant internal and external events in the organization \cite{McGilvray2008} (e.g. sales orders, invoices, purchase orders, credit card payments or shipments). This data are typically grouped into transaction records that include associated master and reference data (see~Figure~\ref{fig:an_example_of_data_categories}) \cite{McGilvray2008}. Transaction events are usually associated with a verb (e.g. Create a Sales order) and generate transaction data (e.g. Sales order) \cite{Mahanti2018}.
+					\item \textit{Historical data} -- Transaction data having a time dimension become historical upon completion of the transaction \cite{Mahanti2018}. Historical data at a certain point in time contain significant facts that should not be altered, except for error correction \cite{McGilvray2008}\cite{Mahanti2018}. This category of data is essential for security, compliance and forecasting (e.g. financial or stock market forecasts) \cite{McGilvray2008}. One example of historical data could be a change in the customer's last name in the master data, which causes the old master record to become historical data \cite{Mahanti2018}.
+					\item \textit{Metadata} -- Metadata are structured data defining other data \cite{Mahanti2018}. For example, in~Figure~\ref{fig:an_example_of_data_categories}, the master data (Product Record) is described by the metadata product information. One of their main tasks is to facilitate data retrieval, interpretation and use \cite{McGilvray2008}. Products can be recommended to customers based on their metadata about browsing e-commerce web sites. Metadata are categorized into the following most common subcategories:
+					\begin{itemize}
+						\item \emph{Technical metadata} is used to describe the technical aspects of data within the storage technologies used (e.g. table column names, length, type, primary or foreign key) \cite{McGilvray2008}\cite{Mahanti2018}.
+						\item \emph{Business metadata} describe non-technical functionality and aspects of data and their use within the business (e.g. column definitions, business terms and rules, key performance indicators (KPIs)) \cite{McGilvray2008}\cite{Mahanti2018}.
+						\item \emph{Process metadata} describe operational information about the operation of systems that generate, maintain, and deliver data (e.g. ETL process logging - start time, end time, CPU seconds used, number of rows read from the target) \cite{Mahanti2018}. In the event of a process failure, the process data are used to solve issues caused by the process failure \cite{Mahanti2018}. Some organizations create business metadata from process metadata, which can be used, for example, to enhance the company's ability to compete \cite{Mahanti2018}.
+						\item \emph{Audit trail metadata} are a specific type of metadata protected from an alteration of recorded information such as information about capturing how, when, and by whom data were created, accessed, used, updated or deleted  \cite{McGilvray2008}. These are metadata for security purposes, compliance checks, or data incident investigations \cite{Mahanti2018}. For security reasons, this type of data is often stored separately from other data \cite{Mahanti2018} or are adequately protected from access by unauthorized data storage users.
+					\end{itemize}
+				\end{itemize}
+
+				\imagefigurelarge{an_example_of_data_categories}{png/An_example_of_data_categories.png}{An example of data categories \cite{McGilvray2008}.}	
+
+				The book \cite{McGilvray2008} provides historical and temporary data as additional data categories. Temporary data are usually stored in memory for speed data access and is primarily intended for technical purposes (e.g. copy of a table that is created during a processing session to speed up lookups) \cite{McGilvray2008}.	
+				
+				Figure~\ref{fig:data_categories} shows the associations between different data categories. Knowledge of these associations is essential for understanding the transmission of data quality issues and the interconnectivity of these categories \cite{McGilvray2008}. Some reference data are required to create master data, and master data are required to create transaction data. Sometimes, the reference data are directly related to the transaction data, without relating to the master data. Metadata serves for information extension of other categories. From a historical data point of view, it is sometimes necessary to preserve related data from other categories. Otherwise, the information context may be lost. Described data categories have different properties and meaning, thus it is important to think about this data categorization when solving data quality \cite{McGilvray2008}.			
+	
+		\subsection{Quality consequences of Data life flow}
+		\label{sec:quality_consequences_of_data_life_flow}
+			
+			This section describes the consequences of changes in the data and puts them into the context of data quality to follow up on the next sections about data quality (\ref{sec:understanding_data_quality}) smoothly.
+			
+			Data changes can come with processes or methodologies that usually aim to find knowledge from the data. Among the known processes/methodologies, for example, we can mention the KDD process (Knowledge Discovery in Databases), which tries to find useful information or patterns in the data \cite{Fayyad1996}. But before we get to the application of a method (in this case a data mining method) the data will go through selection, preprocessing, reduction or transformation. 
+				
+			These changes are relatively significant and often require expert interaction. For example, data preprocessing interferes with data considerably. It is subject to expert interaction and is difficult to automate due to its complexity. This type of complex data transformation is prone to data issues, and information quality is instead transferred to human precision and responsibility.
+			
+			By moving to a higher abstraction, to the life cycle of information (see Figure~\ref{fig:information_life_cycle}), the information (data) can be analyzed in its life flow. We also encounter these cycles in several forms \cite{Kirkland2015}, but still sticking to subjectivity and non-universality in the data.
+			
+			\imagefigure{information_life_cycle}{png/Information_life_cycle.png}{The Information life cycle is not a linear process \cite{McGilvray2008}.}	
+			
+			In this data life cycle, we understand information as a resource that must be appropriately managed during its life cycle in order to reach its potential \cite{McGilvray2008}. We can observe that this is a non-linear and iterative process which includes the following phases (used information source \cite{McGilvray2008}):
+			
+			\begin{itemize}
+				\item \emph{Plan}. Preparation for the source. For example, objectives identification, information architecture and design planning, development of standards and definitions.
+				\item \emph{Obtain}. Acquire the resource. For example, loading or creating a resource.
+				\item \emph{Store and Share}. Information holding and distribution. For example, storing data in a database and sharing it over a network.
+				\item \emph{Apply}. Use resources to achieve goals. These are all ways of using information. For example, creating a report for the management or running automated processes.
+				\item \emph{Maintain}. Ensure that the resource is working properly. For example, updating, changing or enrichment of data.
+				\item \emph{Dispose}. Cancel a resource when it is no longer in use. For example, archiving or deleting records.
+			\end{itemize}
+			
+			Each of the above phases is related to value, price and quality \cite{McGilvray2008}. The company benefits from the value of the resource if the cost of using the resource is lower than the price of the value obtained. The information must not only be correct, but also useful and appropriate quality.
+			
+			Data quality is related to each activity in each phase of the life cycle \cite{McGilvray2008}. We got another abstraction above -- the quality of individual activities on the data, which to my best knowledge is no longer specified.
+			
+			Quality is a critical part of the information. If the wrong information is applied repeatedly, negative consequences occur \cite{McGilvray2008}. For example, costs or loss of credibility of the company. If the correct information is applied more than once, the value of the information itself will increase \cite{McGilvray2008}.
+			
+			Data is very prone to the "butterfly effect" \cite{Mahanti2018}. This concept comes from the science of chaos theory and is defined as a sensitive dependence on initial conditions, in which a small change in one state of a deterministic non-linear system can lead to large differences in a later state \cite{Mahanti2018}. 
+			
+			In the case of data, unexpressive information error can be exponentially propagated across the system in a significant manner. For example, there may be a situation where time data transmitted between systems is converted from UTC to the local zone due to an upgrade of the support library version\footnote{https://github.com/Azure/azure-storage-net/issues/634)}. 
+			
+			These may be time errors in the order of hours. This time error can be used in an upstream system to calculate the time range, and this erroneous range can be further used in several other systems. For example, it may be a machine learning model that erroneously generates information for a business report. Tracing the error from report to error in the library upgrade requires considerable expert effort.
+			
+			It would be adequate to avoid these ripple effects in the data. If we want to monitor data activity to avoid ripple effects, then is appreciated to automate data quality control with a focus on the initial stages of data flow to avoid finding errors in an exponentially larger data flow search space.

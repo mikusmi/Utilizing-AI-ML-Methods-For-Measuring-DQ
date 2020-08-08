@@ -1,0 +1,10 @@
+DP_Mikus_Michael_2020.pdf
+main.*
+library.bib.*
+!main.tex
+_minted-main/
+*~
+media/svg/*.pdf_tex
+media/svg/*.pdf
+media/bmp/*.pdf_tex
+media/bmp/*.pdf
