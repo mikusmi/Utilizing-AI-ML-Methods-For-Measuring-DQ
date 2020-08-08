@@ -1,4 +1,4 @@
-Utilizing AI/ML methods for measuring data quality
+Datasets
 ===
 For the following experiments, two datasets (directory data) covering two classes of datasets were selected – consistent and inconsistent. The first dataset (see Section 3.1.1 about Consistent dataset - Macy’s (e-commerce)) represents a class of datasets, where the values in a column are homogeneous (e.g. similar length of individual records, fewer missing records) and have a more transparent format. In contrast, the second dataset (see Section 3.1.2 about Inconsistent dataset - Open Food Facts) represents a class of inconsistent datasets whose values are mostly of different nature within a column (e.g. unclear formats, lengths of column values). To the best of my knowledge, there is no labelled dataset for data quality or data quality measurement. For this reason, both datasets were enriched with synthetic data quality issues within the domain context of the dataset and data quality labels for experimental purposes (directory notebooks).
 
