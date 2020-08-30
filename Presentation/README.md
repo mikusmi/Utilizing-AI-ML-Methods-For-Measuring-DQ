@@ -1,4 +1,4 @@
 Master’s thesis presentation
 ===
 
-TODO
+Master thesis presentation.
